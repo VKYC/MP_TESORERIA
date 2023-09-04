@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_partner_property_form_inherit_payroll_payment" model="ir.ui.view">
+        <field name="name">res.partner.view.form.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="account.view_partner_property_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='accounting']/group[1]/group[2]" position="after">
+                <group name="payroll" string="Nómina" groups="account.group_account_invoice">
+                    <field name="is_payroll" attrs="{'invisible': [('bank_ids', '!=', False)]}"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>
