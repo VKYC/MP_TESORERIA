@@ -8,6 +8,7 @@
             <xpath expr="//page[@name='accounting']/group[1]/group[2]" position="after">
                 <group name="payroll" string="Nómina" groups="account.group_account_invoice">
                     <field name="is_payroll" attrs="{'invisible': [('bank_ids', '!=', False)]}"/>
+                    <field name="blocked_for_payments" attrs="{'invisible': [('bank_ids', '!=', False)]}"/>
                 </group>
             </xpath>
         </field>
