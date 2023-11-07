@@ -10,6 +10,9 @@ class AccountMove(models.Model):
     def to_payroll(self):
         move_ids = self.env.context.get('active_ids', [])
         moves = self.env['account.move'].browse(move_ids)
-        moves.write({'for_payroll': True})
+        moves_to_process = moves.filtered(lambda move: move.payment_state == 'not_paid' and move.partner_bank_id and not move.partner_id.blocked_for_payments and move.partner_id.is_payroll)
+        moves_to_process.write({
+            'for_payroll': True
+            })
         return True
     

@@ -11,6 +11,7 @@
         'account', 'base'
     ],
     'data': [
+        'data/ir_sequence.xml',
         'security/ir.model.access.csv',
         'views/res_partner_views.xml',
         'views/account_move_views.xml',
