@@ -1,4 +1,5 @@
 from odoo import _, api, fields, models
+from odoo.exceptions import ValidationError
 
 class AccountMove(models.Model):
     _inherit = 'account.move'
@@ -16,3 +17,17 @@ class AccountMove(models.Model):
             })
         return True
     
+    @api.constrains('for_payroll')
+    def _constrains_for_payroll(self):
+        for record in self:
+            if not record.for_payroll and record.payroll_payment_id and record.payroll_payment_id.state != 'draft':
+                raise ValidationError(_('No se puede desmarcar una factura que ya ha sido enviada en nómina.'))
+    
+    
+    @api.onchange('for_payroll')
+    def _onchange_for_payroll(self):
+        if not self.for_payroll and self.payroll_payment_id:
+            if self.payroll_payment_id.state == 'draft':
+                self.payroll_payment_id = False
+            # else:
+            #     raise ValidationError(_('No se puede desmarcar una factura que ya ha sido enviada en nómina.'))

@@ -24,7 +24,7 @@
                     </group>
                     <notebook>
                         <page name="moves" string="Detalle">
-                            <field name="move_ids" readonly="1">
+                            <field name="move_ids" attrs="{'readonly': [('state', '!=', 'draft')]}">
                                 <tree>
                                     <field name="name"/>
                                     <field name="date"/>
