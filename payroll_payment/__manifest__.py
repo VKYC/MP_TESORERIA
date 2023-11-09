@@ -8,7 +8,7 @@
     'license': 'LGPL-3',
     'category': '',
     'depends': [
-        'account', 'base'
+        'account', 'base', 'account_payment_flow'
     ],
     'data': [
         'data/ir_sequence.xml',
@@ -17,6 +17,7 @@
         'views/account_move_views.xml',
         'views/payroll_payment_views.xml',
         'wizards/payroll_payment_wizard_views.xml',
+        'wizards/warning_views.xml'
     ],
     'demo': [
 

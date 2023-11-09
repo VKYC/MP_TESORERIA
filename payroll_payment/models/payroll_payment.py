@@ -30,3 +30,12 @@ class PayrollPayment(models.Model):
             vals['name'] = self.env['ir.sequence'].next_by_code('payroll.payment') or _('New')
         result = super(PayrollPayment, self).create(vals)
         return result
+    
+    def convert_to_send(self):
+        self.state = 'send'
+    
+    def convert_to_done(self):
+        self.state = 'done'
+    
+    def convert_to_draft(self):
+        self.state = 'draft'

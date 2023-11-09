@@ -7,6 +7,9 @@ class AccountMove(models.Model):
     
     for_payroll = fields.Boolean(string='Para nómina', default=False)
     payroll_payment_id = fields.Many2one('payroll.payment', string='Nómina')
+    mp_flujo_id = fields.Many2one(comodel_name="mp.flujo")
+    mp_grupo_flujo_ids = fields.Many2many(related="mp_flujo_id.grupo_flujo_ids")
+    mp_grupo_flujo_id = fields.Many2one(comodel_name="mp.grupo.flujo", domain="[('id', 'in', mp_grupo_flujo_ids)]")
     
     def to_payroll(self):
         move_ids = self.env.context.get('active_ids', [])

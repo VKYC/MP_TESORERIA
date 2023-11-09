@@ -19,6 +19,9 @@
             <xpath expr="//field[@name='to_check']" position="after">
                 <field name="for_payroll"/>
                 <field name="payroll_payment_id" attrs="{'invisible': [('for_payroll', '=', False)]}"/>
+                <field name="mp_flujo_id" options="{'no_create': True}"/>
+                <field name="mp_grupo_flujo_id" options="{'no_create': True}"/>
+                <field name="mp_grupo_flujo_ids" invisible="1"/>
             </xpath>
         </field>
     </record>

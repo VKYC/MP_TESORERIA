@@ -1,6 +1,6 @@
 from odoo import _, api, fields, models
 
-class PayrollPaymentWizard(models.Model):
+class PayrollPaymentWizard(models.TransientModel):
     _name = 'payroll.payment.wizard'
     _description = 'Payroll Payment Wizard'
     
@@ -25,9 +25,23 @@ class PayrollPaymentWizard(models.Model):
             'payroll_payment_id': self.payroll_payment_id.id
                     })
         if self.payroll_payment_id.amount_total > self.payroll_payment_id.budget:
-            warning = {}
-            warning['warning'] = {
-            'title': 'Advertencia!',
-            'message': f'Usted a excedido el presupuesto de la nómina {self.payroll_payment_id.name}.'
+            # warning = {}
+            # warning['warning'] = {
+            # 'title': 'Advertencia!',
+            # 'message': f'Usted a excedido el presupuesto de la nómina {self.payroll_payment_id.name}.'
+            # }
+            # return warning
+            record = self.env['warning'].create({
+                'budget': self.payroll_payment_id.budget,
+                'amount_total': self.payroll_payment_id.amount_total,
+                'currency_id': self.payroll_payment_id.currency_id.id,
+                'payroll_payment_id': self.payroll_payment_id.id
+                })
+            return {
+                'name': _('Advertencia'),
+                'view_mode': 'form',
+                'res_model': 'warning',
+                'type': 'ir.actions.act_window',
+                'res_id': record.id,
+                'target': 'new',
             }
-            return warning
