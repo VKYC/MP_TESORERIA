@@ -28,11 +28,12 @@
                     <notebook>
                         <page name="moves" string="Detalle">
                             <field name="move_ids" attrs="{'readonly': [('state', '!=', 'draft')]}">
-                                <tree>
+                                <tree editable="bottom">
                                     <field name="name"/>
                                     <field name="date"/>
                                     <field name="mp_flujo_id"/>
                                     <field name="mp_grupo_flujo_id"/>
+                                    <field name="mp_grupo_flujo_ids" invisible="1"/>
                                     <field name="amount_total"/>
                                     <field name="state"/>
                                 </tree>

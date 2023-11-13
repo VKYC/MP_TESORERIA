@@ -32,5 +32,8 @@ class AccountMove(models.Model):
         if not self.for_payroll and self.payroll_payment_id:
             if self.payroll_payment_id.state == 'draft':
                 self.payroll_payment_id = False
-            # else:
-            #     raise ValidationError(_('No se puede desmarcar una factura que ya ha sido enviada en nómina.'))
+           
+    @api.onchange("mp_flujo_id")
+    def _onchange_mp_flujo_id(self):
+        for register_id in self:
+            register_id.mp_grupo_flujo_id = self.env['mp.grupo.flujo']
