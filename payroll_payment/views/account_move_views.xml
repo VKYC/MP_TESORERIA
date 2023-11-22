@@ -5,7 +5,7 @@
         <field name="model">account.move</field>
         <field name="inherit_id" ref="account.view_invoice_tree"/>
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='state']" position="before">
+            <xpath expr="//field[@name='name']" position="before">
                 <field name="for_payroll" optional="hide" widget="boolean_toggle"/>
                 <field name="payroll_payment_id"/>
             </xpath>
