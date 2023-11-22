@@ -27,9 +27,10 @@
                     </group>
                     <notebook>
                         <page name="moves" string="Detalle">
-                            <field name="move_ids" attrs="{'readonly': [('state', '!=', 'draft')]}">
+                            <field name="line_ids" attrs="{'readonly': [('state', '!=', 'draft')]}">
                                 <tree editable="bottom">
-                                    <field name="name"/>
+                                    <field name="move_id"/>
+                                    <!-- <field name="name"/> -->
                                     <field name="date"/>
                                     <field name="mp_flujo_id"/>
                                     <field name="mp_grupo_flujo_id"/>

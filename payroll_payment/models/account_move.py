@@ -37,3 +37,22 @@ class AccountMove(models.Model):
     def _onchange_mp_flujo_id(self):
         for register_id in self:
             register_id.mp_grupo_flujo_id = self.env['mp.grupo.flujo']
+    
+    # @api.onchange('payroll_payment_id')
+    # def _onchange_payroll_payment_id(self):
+    #     pass
+    def write(self, vals):
+        if 'payroll_payment_id' in vals:
+            for record in self:
+                if record.payroll_payment_id.state != 'draft':
+                    raise ValidationError(_('No se puede cambiar la nómina de una factura que ya ha sido enviada.'))
+                else:
+                    line = record.payroll_payment_id.line_ids.filtered(lambda line: line.move_id.id == record.id)
+                    if line.exists():
+                        line.unlink()
+                    if vals.get('payroll_payment_id'):
+                        self.env['payroll.payment.line'].create({
+                            'move_id': record.id,
+                            'payroll_payment_id': vals.get('payroll_payment_id'),
+                        })
+        return super(AccountMove, self).write(vals)

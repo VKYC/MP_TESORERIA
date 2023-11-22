@@ -20,6 +20,14 @@ class PayrollPaymentWizard(models.TransientModel):
             and move.partner_id.is_payroll
             )
         # if self.payroll_payment_id.state == 'draft':
+        for move in moves_to_process:
+            self.env['payroll.payment.line'].create({
+                'move_id': move.id,
+                'payroll_payment_id': self.payroll_payment_id.id,
+                # 'mp_flujo_id': move.mp_flujo_id.id if move.mp_flujo_id else False,
+                # 'mp_grupo_flujo_id': move.mp_grupo_flujo_id.id if move.mp_grupo_flujo_id else False,
+                # 'mp_grupo_flujo_ids': [(6, 0, move.mp_grupo_flujo_ids.ids)] if move.mp_grupo_flujo_ids else False,
+            })
         moves_to_process.write({
             # 'for_payroll': True,
             'payroll_payment_id': self.payroll_payment_id.id
