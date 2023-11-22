@@ -44,11 +44,11 @@ class AccountMove(models.Model):
     def write(self, vals):
         if 'payroll_payment_id' in vals:
             for record in self:
-                if record.payroll_payment_id.state != 'draft':
+                if record.payroll_payment_id and record.payroll_payment_id.state != 'draft':
                     raise ValidationError(_('No se puede cambiar la nómina de una factura que ya ha sido enviada.'))
                 else:
                     line = record.payroll_payment_id.line_ids.filtered(lambda line: line.move_id.id == record.id)
-                    if line.exists():
+                    if vals.get('payroll_payment_id') != False and line.exists():
                         line.unlink()
                     if vals.get('payroll_payment_id'):
                         self.env['payroll.payment.line'].create({

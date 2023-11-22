@@ -10,10 +10,14 @@ class PayrollPaymentLine(models.Model):
     currency_id = fields.Many2one('res.currency', string='Moneda', related='move_id.currency_id')
     amount_total = fields.Monetary(string='Total', currency_field='currency_id', related='move_id.amount_total')
     state = fields.Selection(string='Estado', related='move_id.state')
-    mp_flujo_id = fields.Many2one(comodel_name="mp.flujo", related='move_id.mp_flujo_id', store=True)
+    mp_flujo_id = fields.Many2one(comodel_name="mp.flujo", related='move_id.mp_flujo_id', store=True, readonly=False)
     mp_grupo_flujo_ids = fields.Many2many(related="mp_flujo_id.grupo_flujo_ids")
-    mp_grupo_flujo_id = fields.Many2one(comodel_name="mp.grupo.flujo", domain="[('id', 'in', mp_grupo_flujo_ids)]", related='move_id.mp_grupo_flujo_id', store=True)
+    mp_grupo_flujo_id = fields.Many2one(comodel_name="mp.grupo.flujo", domain="[('id', 'in', mp_grupo_flujo_ids)]", related='move_id.mp_grupo_flujo_id', store=True, readonly=False)
     payroll_payment_id = fields.Many2one('payroll.payment', string='Nómina')
+    
+    _sql_constraints = [
+        ("move_payroll_unique", "unique(move_id, payroll_payment_id)", "La factura ya se encuentra en la nómina."),
+    ]
     
     @api.onchange("mp_flujo_id")
     def _onchange_mp_flujo_id(self):
@@ -22,7 +26,7 @@ class PayrollPaymentLine(models.Model):
     
     def unlink(self):
         for record in self:
-            if record.payroll_payment_id.state != 'draft':
+            if record.payroll_payment_id and record.payroll_payment_id.state != 'draft':
                 raise ValidationError(_('No se puede eliminar una factura que ya ha sido enviada.'))
             record.move_id.payroll_payment_id = False
         return super(PayrollPaymentLine, self).unlink()
