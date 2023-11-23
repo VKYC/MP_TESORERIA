@@ -15,6 +15,7 @@
         'security/ir.model.access.csv',
         'views/res_partner_views.xml',
         'views/account_move_views.xml',
+        'views/res_bank_views.xml',
         'views/payroll_payment_views.xml',
         'wizards/payroll_payment_wizard_views.xml',
         'wizards/warning_views.xml'

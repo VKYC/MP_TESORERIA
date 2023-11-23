@@ -18,7 +18,7 @@ class PayrollPayment(models.Model):
         ('done', 'Procesado')
         ], string='Estado', default='draft')
     number_of_invoices = fields.Integer('Cantidad de facturas', compute='_compute_number_of_invoices')
-    bank_id = fields.Many2one('res.partner.bank', string='Banco')
+    partner_bank_id = fields.Many2one('res.partner.bank', string='Banco')
     # move_ids = fields.One2many('account.move', 'payroll_payment_id', string='Facturas')
     line_ids = fields.One2many('payroll.payment.line', 'payroll_payment_id', string='Facturas')
     budget = fields.Monetary(string='Presupuesto', currency_field='currency_id')
@@ -52,12 +52,8 @@ class PayrollPayment(models.Model):
             raise ValidationError(_('Debe seleccionar un grupo y flujo para todas las facturas.'))
         if self.line_ids and all(self.line_ids.mapped(lambda r: bool(r.mp_flujo_id) and bool(r.mp_grupo_flujo_id))) and self.amount_total <= self.budget:
             self.state = 'send'
-        
-    def generate_payroll_xlsx(self):
-        # Create an in-memory output file for the new workbook.
-        output = io.BytesIO()
-        # Create a workbook and add
-        workbook = xlsxwriter.Workbook(output)
+            
+    def format_template_xlsx_bci(self, workbook):
         worksheet = workbook.add_worksheet('Nómina')
         # Add a bold format to use to highlight cells.
         bold = workbook.add_format({'bold': True})
@@ -83,9 +79,77 @@ class PayrollPayment(models.Model):
             worksheet.write(row, col + 6, line.amount_total)
             row += 1
         workbook.close()
+        
+    def format_template_xlsx_itau(self, workbook):
+        worksheet = workbook.add_worksheet('Nómina')
+        # Add a bold format to use to highlight cells.
+        bold = workbook.add_format({'bold': True})
+        # Write some data headers.
+        worksheet.write('A1', 'Fecha', bold)
+        worksheet.write('B1', 'Código', bold)
+        worksheet.write('C1', 'Nombre', bold)
+        worksheet.write('D1', 'Cédula', bold)
+        worksheet.write('E1', 'Cuenta', bold)
+        worksheet.write('F1', 'Banco', bold)
+        worksheet.write('G1', 'Monto', bold)
+        # Start from the first cell below the headers.
+        row = 1
+        col = 0
+        # Iterate over the data and write it out row by row.
+        for line in self.line_ids:
+            worksheet.write(row, col, line.date)
+            worksheet.write(row, col + 1, line.move_id.name)
+            worksheet.write(row, col + 2, line.move_id.partner_id.name)
+            worksheet.write(row, col + 3, line.move_id.partner_id.vat)
+            worksheet.write(row, col + 4, line.move_id.partner_id.bank_ids[0].acc_number)
+            worksheet.write(row, col + 5, line.move_id.partner_id.bank_ids[0].partner_bank_id.name)
+            worksheet.write(row, col + 6, line.amount_total)
+            row += 1
+        workbook.close()
+        
+    def format_template_xlsx_scotiabank(self, workbook):
+        worksheet = workbook.add_worksheet('Nómina')
+        # Add a bold format to use to highlight cells.
+        bold = workbook.add_format({'bold': True})
+        # Write some data headers.
+        worksheet.write('A1', 'Fecha', bold)
+        worksheet.write('B1', 'Código', bold)
+        worksheet.write('C1', 'Nombre', bold)
+        worksheet.write('D1', 'Cédula', bold)
+        worksheet.write('E1', 'Cuenta', bold)
+        worksheet.write('F1', 'Banco', bold)
+        worksheet.write('G1', 'Monto', bold)
+        # Start from the first cell below the headers.
+        row = 1
+        col = 0
+        # Iterate over the data and write it out row by row.
+        for line in self.line_ids:
+            worksheet.write(row, col, line.date)
+            worksheet.write(row, col + 1, line.move_id.name)
+            worksheet.write(row, col + 2, line.move_id.partner_id.name)
+            worksheet.write(row, col + 3, line.move_id.partner_id.vat)
+            worksheet.write(row, col + 4, line.move_id.partner_id.bank_ids[0].acc_number)
+            worksheet.write(row, col + 5, line.move_id.partner_id.bank_ids[0].partner_bank_id.name)
+            worksheet.write(row, col + 6, line.amount_total)
+            row += 1
+        workbook.close()
+        
+    def generate_payroll_xlsx(self):
+        # Create an in-memory output file for the new workbook.
+        output = io.BytesIO()
+        # Create a workbook and add
+        workbook = xlsxwriter.Workbook(output)
+        # Modifica el excel según el banco seleccionado
+        if self.partner_bank_id.bank_id.format_template_xlsx:
+            try:
+                getattr(self, f'format_template_xlsx_{self.partner_bank_id.bank_id.format_template_xlsx}')(workbook)
+            except Exception as e:
+                raise ValidationError(_(e))
+        else:
+            raise ValidationError(_('No existe una plantilla para el banco seleccionado.'))
         output.seek(0)
         # construct the file name
-        filename = f'{self.name}-{self.bank_id.acc_number}'.replace(' ', '_').replace('-', '_') + '.xlsx'
+        filename = f'{self.name}-{self.partner_bank_id.acc_number}'.replace(' ', '_').replace('-', '_') + '.xlsx'
         # Get the value of the BytesIO buffer and put it in the response
         self.payroll_xlsx = base64.b64encode(output.getvalue())
         # self.payroll_xlsx = output.read().encode('base64')

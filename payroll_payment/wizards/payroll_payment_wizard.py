@@ -5,7 +5,7 @@ class PayrollPaymentWizard(models.TransientModel):
     _description = 'Payroll Payment Wizard'
     
     date = fields.Date('Fecha', related='payroll_payment_id.date')
-    bank_id = fields.Many2one('res.partner.bank', string='Banco', related='payroll_payment_id.bank_id')
+    partner_bank_id = fields.Many2one('res.partner.bank', string='Banco', related='payroll_payment_id.partner_bank_id')
     payroll_payment_id = fields.Many2one('payroll.payment', string='Nómina')
     
     def process_payroll(self):
