@@ -6,10 +6,13 @@
         <field name="arch" type="xml">
             <form string="Pago de nómina">
                 <header>
-                    <button name="convert_to_send" string="A enviado" class="oe_highlight" type="object" data-hotkey="v" attrs="{'invisible': [('state', '!=', 'draft')]}"/>
-                    <button name="convert_to_done" string="Realizado" class="oe_highlight" type="object" data-hotkey="v" attrs="{'invisible': [('state', '!=', 'send')]}"/>
-                    <button name="convert_to_draft" string="A borrador" class="oe_highlight" type="object" data-hotkey="v" attrs="{'invisible': [('state', '!=', 'send')]}"/>
-                    <field name="state" widget="statusbar" statusbar_visible="draft,send,done"/>
+                    <button name="convert_to_send" string="A enviado" class="oe_highlight" type="object" attrs="{'invisible': [('state', '!=', 'draft')]}"/>
+                    <button name="convert_approved" string="Aprobar" class="oe_highlight" type="object" groups="base.group_system" attrs="{'invisible': [('state', '!=', 'send')]}"/>
+                    <!-- -->
+                    <button name="print_payroll" string="Generar e imprimir nómina" class="oe_highlight" type="object" attrs="{'invisible': [('state', '!=', 'approved')]}"/>
+                    <button name="convert_to_done" string="Realizado" class="oe_highlight" type="object" attrs="{'invisible': [('state', '!=', 'generation_payroll')]}"/>
+                    <button name="convert_to_draft" string="A borrador" class="oe_highlight" type="object" attrs="{'invisible': [('state', '!=', 'send')]}"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,send,approved,generation_payroll,done"/>
                 </header>
                 <sheet>
                     <group>
@@ -23,6 +26,8 @@
                             <field name='number_of_invoices'/>
                             <field name='bank_id'/>
                             <field name='amount_total'/>
+                            <field name="payroll_xlsx" filename="payroll_xlsx_filename"/>
+                            <field name="payroll_xlsx_filename" invisible="1"/>
                         </group>
                     </group>
                     <notebook>
