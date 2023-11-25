@@ -14,9 +14,10 @@ class PayrollPaymentLine(models.Model):
     mp_grupo_flujo_ids = fields.Many2many(related="mp_flujo_id.grupo_flujo_ids")
     mp_grupo_flujo_id = fields.Many2one(comodel_name="mp.grupo.flujo", domain="[('id', 'in', mp_grupo_flujo_ids)]", related='move_id.mp_grupo_flujo_id', store=True, readonly=False)
     payroll_payment_id = fields.Many2one('payroll.payment', string='Nómina')
+    to_check = fields.Boolean(string='A revisar', related='move_id.to_check')
     
     _sql_constraints = [
-        ("move_payroll_unique", "unique(move_id, payroll_payment_id)", "La factura ya se encuentra en la nómina."),
+        ("move_unique", "unique(move_id)", "La factura ya se encuentra en una nómina."),
     ]
     
     @api.onchange("mp_flujo_id")
@@ -30,3 +31,21 @@ class PayrollPaymentLine(models.Model):
                 raise ValidationError(_('No se puede eliminar una factura que ya ha sido enviada.'))
             record.move_id.payroll_payment_id = False
         return super(PayrollPaymentLine, self).unlink()
+    
+    def action_review(self):
+        self.ensure_one()
+        context = {
+            "default_move_id": self.move_id.id,
+        }
+        self.move_id.to_check = True
+        context.update(self.env.context)
+        view_id = self.env.ref("payroll_payment.account_move_observation_view_form").id
+        return {
+            "type": "ir.actions.act_window",
+            "name": "Oservación",
+            "res_model": "account.move.observation",
+            "view_mode": "form",
+            "views": [(view_id, "form")],
+            "target": "new",
+            "context": context,
+        }

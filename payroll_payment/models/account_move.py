@@ -10,6 +10,7 @@ class AccountMove(models.Model):
     mp_flujo_id = fields.Many2one(comodel_name="mp.flujo")
     mp_grupo_flujo_ids = fields.Many2many(related="mp_flujo_id.grupo_flujo_ids")
     mp_grupo_flujo_id = fields.Many2one(comodel_name="mp.grupo.flujo", domain="[('id', 'in', mp_grupo_flujo_ids)]")
+    observation = fields.Text(string='Observación')
     
     def to_payroll(self):
         move_ids = self.env.context.get('active_ids', [])
@@ -56,3 +57,13 @@ class AccountMove(models.Model):
                             'payroll_payment_id': vals.get('payroll_payment_id'),
                         })
         return super(AccountMove, self).write(vals)
+    
+    @api.onchange('for_payroll')
+    def _onchange_to_payroll(self):
+        if self.for_payroll and self.partner_id.blocked_for_payments:
+            raise ValidationError(_('El proveedor se encuentra bloqueado para pagos.'))
+        
+    def action_register_payment(self):
+        if self.partner_id.blocked_for_payments:
+            raise ValidationError(_('El proveedor se encuentra bloqueado para pagos.'))
+        return super(AccountMove, self).action_register_payment()

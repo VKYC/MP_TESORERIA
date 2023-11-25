@@ -58,25 +58,32 @@ class PayrollPayment(models.Model):
         # Add a bold format to use to highlight cells.
         bold = workbook.add_format({'bold': True})
         # Write some data headers.
-        worksheet.write('A1', 'Fecha', bold)
-        worksheet.write('B1', 'Código', bold)
-        worksheet.write('C1', 'Nombre', bold)
-        worksheet.write('D1', 'Cédula', bold)
-        worksheet.write('E1', 'Cuenta', bold)
-        worksheet.write('F1', 'Banco', bold)
-        worksheet.write('G1', 'Monto', bold)
+        worksheet.write('A1', 'Nº Cuenta de Cargo', bold)
+        worksheet.write('B1', 'Nº Cuenta de Destino', bold)
+        worksheet.write('C1', 'Banco Destino', bold)
+        worksheet.write('D1', 'Rut Benefeciario', bold)
+        worksheet.write('E1', 'Dig Verif. Benefeciario', bold)
+        worksheet.write('F1', 'Nombre Benefeciario', bold)
+        worksheet.write('G1', 'Monto Transferencia', bold)
+        worksheet.write('H1', 'Nº Factura Boleta', bold)
+        worksheet.write('I1', 'Nº Orden de Compra', bold)
+        worksheet.write('J1', 'Tipo de pago', bold)
+        worksheet.write('K1', 'Mensaje Destinatario', bold)
+        worksheet.write('L1', 'Email Destinatario', bold)
+        worksheet.write('M1', 'Cuenta Destino inscrita como', bold)
+        
         # Start from the first cell below the headers.
         row = 1
         col = 0
         # Iterate over the data and write it out row by row.
         for line in self.line_ids:
-            worksheet.write(row, col, line.date)
-            worksheet.write(row, col + 1, line.move_id.name)
-            worksheet.write(row, col + 2, line.move_id.partner_id.name)
-            worksheet.write(row, col + 3, line.move_id.partner_id.vat)
-            worksheet.write(row, col + 4, line.move_id.partner_id.bank_ids[0].acc_number)
-            worksheet.write(row, col + 5, line.move_id.partner_id.bank_ids[0].bank_id.name)
-            worksheet.write(row, col + 6, line.amount_total)
+            worksheet.write(row, col, '*')
+            worksheet.write(row, col + 1, '*')
+            worksheet.write(row, col + 2, '*')
+            worksheet.write(row, col + 3, '*')
+            worksheet.write(row, col + 4, '*')
+            worksheet.write(row, col + 5, '*')
+            worksheet.write(row, col + 6, '*')
             row += 1
         workbook.close()
         
@@ -85,25 +92,48 @@ class PayrollPayment(models.Model):
         # Add a bold format to use to highlight cells.
         bold = workbook.add_format({'bold': True})
         # Write some data headers.
-        worksheet.write('A1', 'Fecha', bold)
-        worksheet.write('B1', 'Código', bold)
-        worksheet.write('C1', 'Nombre', bold)
-        worksheet.write('D1', 'Cédula', bold)
-        worksheet.write('E1', 'Cuenta', bold)
-        worksheet.write('F1', 'Banco', bold)
-        worksheet.write('G1', 'Monto', bold)
+        worksheet.write('A3', 'Rut Empresa', bold)
+        worksheet.write('A4', 'Cantidad de Pagos', bold)
+        worksheet.write('A5', 'Monto Total de Pagos', bold)
+        worksheet.write('A6', 'Tipo de Producto', bold)
+        worksheet.write('A7', 'Tipo de Servicio', bold)
+        worksheet.write('A8', 'Nº Cuenta Cargo', bold)
+        worksheet.write('A9', 'Glosa Cartola Origen', bold)
+        worksheet.write('A10', 'Glosa Cartola Destino', bold)
+        ############
+        worksheet.write('B3', '*')
+        worksheet.write('B4', '*')
+        worksheet.write('B5', '*')
+        worksheet.write('B6', '*')
+        worksheet.write('B7', '*')
+        worksheet.write('B8', '*')
+        worksheet.write('B9', '*')
+        worksheet.write('B10', '*')
+        ############
+        worksheet.write('A12', 'Rut Beneficiario', bold)
+        worksheet.write('B12', 'Nombre Benefeciario', bold)
+        worksheet.write('C12', 'Monto', bold)
+        worksheet.write('D12', 'Medio de Pago', bold)
+        worksheet.write('E12', 'Código Banco', bold)
+        worksheet.write('F12', 'Tipo de Cuenta', bold)
+        worksheet.write('G12', 'Número de Cuenta', bold)
+        worksheet.write('H12', 'Email', bold)
+        worksheet.write('I12', 'Referencia Cliente', bold)
+        worksheet.write('J12', 'Glosa Cartola Origen', bold)
+        worksheet.write('K12', 'Glosa Cartola Destino', bold)
+        worksheet.write('L12', 'Detalle de Pago', bold)
         # Start from the first cell below the headers.
-        row = 1
+        row = 12
         col = 0
         # Iterate over the data and write it out row by row.
         for line in self.line_ids:
-            worksheet.write(row, col, line.date)
-            worksheet.write(row, col + 1, line.move_id.name)
-            worksheet.write(row, col + 2, line.move_id.partner_id.name)
-            worksheet.write(row, col + 3, line.move_id.partner_id.vat)
-            worksheet.write(row, col + 4, line.move_id.partner_id.bank_ids[0].acc_number)
-            worksheet.write(row, col + 5, line.move_id.partner_id.bank_ids[0].partner_bank_id.name)
-            worksheet.write(row, col + 6, line.amount_total)
+            worksheet.write(row, col, '*')
+            worksheet.write(row, col + 1, '*')
+            worksheet.write(row, col + 2, '*')
+            worksheet.write(row, col + 3, '*')
+            worksheet.write(row, col + 4, '*')
+            worksheet.write(row, col + 5, '*')
+            worksheet.write(row, col + 6, '*')
             row += 1
         workbook.close()
         
@@ -124,13 +154,13 @@ class PayrollPayment(models.Model):
         col = 0
         # Iterate over the data and write it out row by row.
         for line in self.line_ids:
-            worksheet.write(row, col, line.date)
-            worksheet.write(row, col + 1, line.move_id.name)
-            worksheet.write(row, col + 2, line.move_id.partner_id.name)
-            worksheet.write(row, col + 3, line.move_id.partner_id.vat)
-            worksheet.write(row, col + 4, line.move_id.partner_id.bank_ids[0].acc_number)
-            worksheet.write(row, col + 5, line.move_id.partner_id.bank_ids[0].partner_bank_id.name)
-            worksheet.write(row, col + 6, line.amount_total)
+            worksheet.write(row, col, '*')
+            worksheet.write(row, col + 1, '*')
+            worksheet.write(row, col + 2, '*')
+            worksheet.write(row, col + 3, '*')
+            worksheet.write(row, col + 4, '*')
+            worksheet.write(row, col + 5, '*')
+            worksheet.write(row, col + 6, '*')
             row += 1
         workbook.close()
         
@@ -166,13 +196,6 @@ class PayrollPayment(models.Model):
             'url': '/web/content/payroll.payment/%s/payroll_xlsx/%s?download=true' % (self.id, self.payroll_xlsx_filename),
             'target': 'self',
         }
-        
-        # download =  {
-        #     'type': 'binary',
-        #     'data': '/web/content/payroll.payment/%s/payroll_xlsx/%s?download=true' % (self.id, self.payroll_xlsx_filename),
-        #     'target': 'self',
-        # }
-        
         self.state = 'generation_payroll'
         return download
     

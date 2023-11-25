@@ -23,6 +23,27 @@
                 <field name="mp_grupo_flujo_id" options="{'no_create': True}"/>
                 <field name="mp_grupo_flujo_ids" invisible="1"/>
             </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page name="observation" string="Nómina">
+                    <group>
+                        <group>
+                            <field name="observation"/>
+                        </group>
+                        <group></group>
+                    </group>
+                </page>
+            </xpath>
         </field>
     </record>
+    <record id="account_move_action" model="ir.actions.act_window">
+        <field name="name">Nóminas</field>
+        <field name="res_model">account.move</field>
+        <field name="view_mode">tree,form</field>
+        <field name="domain">[]</field>
+        <field name="context">{'group_by': ['payroll_payment_id', 'date', 'partner_id']}</field>
+        <field name="help" type="html">
+            <p></p>
+        </field>
+    </record>
+    <menuitem id="account_move_payroll_payment_menu" name="Nóminas" action="account_move_action" parent="account_payment_flow.account_mp_flujo_menu"/>
 </odoo>

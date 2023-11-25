@@ -31,17 +31,32 @@
                         </group>
                     </group>
                     <notebook>
-                        <page name="moves" string="Detalle">
+                        <page name="moves_not_system" string="Detalle" groups="!base.group_system">
                             <field name="line_ids" attrs="{'readonly': [('state', '!=', 'draft')]}">
                                 <tree editable="bottom">
                                     <field name="move_id"/>
-                                    <!-- <field name="name"/> -->
                                     <field name="date"/>
-                                    <field name="mp_flujo_id"/>
-                                    <field name="mp_grupo_flujo_id"/>
+                                    <field name="mp_flujo_id" options="{'no_create': True}"/>
+                                    <field name="mp_grupo_flujo_id" options="{'no_create': True}"/>
                                     <field name="mp_grupo_flujo_ids" invisible="1"/>
                                     <field name="amount_total"/>
                                     <field name="state"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page name="moves_system" string="Detalle" groups="base.group_system">
+                            <field name="line_ids" attrs="{'readonly': [('state', 'not in', ['draft', 'send'])]}">
+                                <tree editable="bottom">
+                                    <field name="move_id"/>
+                                    <field name="date"/>
+                                    <field name="mp_flujo_id" options="{'no_create': True}"/>
+                                    <field name="mp_grupo_flujo_id" options="{'no_create': True}"/>
+                                    <field name="mp_grupo_flujo_ids" invisible="1"/>
+                                    <field name="amount_total"/>
+                                    <field name="state"/>
+                                    <field name="to_check" invisible="1"/>
+                                    <button name="action_review" string="Revisar" type="object" icon="fa-ban text-success" attrs="{'invisible': [ ('parent.state', '!=', 'send')]}"/>
+                                    <!-- <button name="action_review" string="Revisar" type="object" icon="fa-ban text-success" attrs="{'invisible': ['|', ('parent.state', '!=', 'send'), ('to_check', '=', True)]}"/> -->
                                 </tree>
                             </field>
                         </page>
@@ -60,6 +75,7 @@
                 <field name="currency_id"/>
                 <field name='number_of_invoices'/>
                 <field name='partner_bank_id'/>
+                <field name="state"/>
             </tree>
         </field>
     </record>

@@ -3,5 +3,7 @@ access_payroll_payment_group_name,payroll.payment.account.group_account_invoice,
 access_payroll_payment_wizard_all,payroll.payment.wizard.all,model_payroll_payment_wizard,,1,1,1,1
 access_warning_all,warning.all,model_warning,,1,1,1,1
 access_payroll_payment_line_all,payroll.payment.line.all,model_payroll_payment_line,,1,1,1,1
+access_account_move_observation_all,account.move.observation.all,model_account_move_observation,,1,1,1,1
+
 
 
