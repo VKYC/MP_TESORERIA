@@ -33,6 +33,16 @@ class AccountMove(models.Model):
         if not self.for_payroll and self.payroll_payment_id:
             if self.payroll_payment_id.state == 'draft':
                 self.payroll_payment_id = False
+        if self.for_payroll:
+            if self.partner_id.blocked_for_payments:
+                raise ValidationError(_('El proveedor se encuentra bloqueado para pagos.'))
+            if not self.partner_id.is_payroll:
+                raise ValidationError(_('El proveedor no es de nómina.'))
+            if not self.partner_bank_id:
+                raise ValidationError(_('El proveedor no tiene banco asociado.'))
+            if self.payment_state != 'not_paid':
+                raise ValidationError(_('La factura ya ha sido pagada.'))
+            
            
     @api.onchange("mp_flujo_id")
     def _onchange_mp_flujo_id(self):
