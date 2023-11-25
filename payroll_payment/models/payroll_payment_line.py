@@ -20,6 +20,11 @@ class PayrollPaymentLine(models.Model):
         ("move_unique", "unique(move_id)", "La factura ya se encuentra en una nómina."),
     ]
     
+    @api.onchange('line_ids')
+    def _onchange_line_ids(self):
+        if self.line_ids and self.payroll_payment_id.amount_total > self.payroll_payment_id.budget:
+            raise ValidationError(_('El monto total de las facturas es mayor al presupuesto.'))
+    
     @api.onchange('move_id')
     def _onchange_move_id(self):
         if self.move_id and not self.move_id.for_payroll:
