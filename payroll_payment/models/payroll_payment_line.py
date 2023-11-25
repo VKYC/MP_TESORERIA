@@ -20,6 +20,19 @@ class PayrollPaymentLine(models.Model):
         ("move_unique", "unique(move_id)", "La factura ya se encuentra en una nómina."),
     ]
     
+    @api.onchange('move_id')
+    def _onchange_move_id(self):
+        if self.move_id and not self.move_id.for_payroll:
+            raise ValidationError(_('La factura no se encuentra marcada para nómina.'))
+        if self.move_id and self.move_id.payment_state != 'not_paid':
+            raise ValidationError(_('La factura ya ha sido pagada.'))
+        if self.move_id and self.move_id.currency_id != self.payroll_payment_id.currency_id:
+            raise ValidationError(_('La factura no tiene la misma moneda que la nómina.'))
+        if self.move_id and self.move_id.partner_id.blocked_for_payments:
+            raise ValidationError(_('El proveedor se encuentra bloqueado para pagos.'))
+        if self.move_id and len(self.move_id.partner_id.bank_ids) == 0:
+            raise ValidationError(_('El proveedor no tiene bancos asociados.'))
+    
     @api.onchange("mp_flujo_id")
     def _onchange_mp_flujo_id(self):
         for register_id in self:
