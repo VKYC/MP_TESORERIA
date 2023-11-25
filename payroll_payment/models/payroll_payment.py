@@ -77,13 +77,19 @@ class PayrollPayment(models.Model):
         col = 0
         # Iterate over the data and write it out row by row.
         for line in self.line_ids:
-            worksheet.write(row, col, '*')
-            worksheet.write(row, col + 1, '*')
-            worksheet.write(row, col + 2, '*')
-            worksheet.write(row, col + 3, '*')
-            worksheet.write(row, col + 4, '*')
-            worksheet.write(row, col + 5, '*')
-            worksheet.write(row, col + 6, '*')
+            worksheet.write(row, col, self.partner_bank_id.acc_number or '')
+            worksheet.write(row, col + 1, line.move_id.partner_bank_id.acc_number or '')
+            worksheet.write(row, col + 2, line.move_id.partner_bank_id.bank_id.payroll_code or '')
+            worksheet.write(row, col + 3, line.move_id.partner_id.vat or '')
+            worksheet.write(row, col + 4, line.move_id.partner_id and line.move_id.partner_id.vat[-1] or '')
+            worksheet.write(row, col + 5, line.move_id.partner_id.name or '')
+            worksheet.write(row, col + 6, line.amount_total)
+            worksheet.write(row, col + 7, line.move_id.name or '')
+            worksheet.write(row, col + 8, line.move_id.ref or '')
+            worksheet.write(row, col + 9, 'OTRO *')
+            worksheet.write(row, col + 10, 'PAGO FINIQUITO *')
+            worksheet.write(row, col + 11, line.move_id.partner_id.email or '')
+            worksheet.write(row, col + 12, line.move_id.partner_id.name or '')
             row += 1
         workbook.close()
         
@@ -101,14 +107,14 @@ class PayrollPayment(models.Model):
         worksheet.write('A9', 'Glosa Cartola Origen', bold)
         worksheet.write('A10', 'Glosa Cartola Destino', bold)
         ############
-        worksheet.write('B3', '*')
-        worksheet.write('B4', '*')
-        worksheet.write('B5', '*')
-        worksheet.write('B6', '*')
-        worksheet.write('B7', '*')
-        worksheet.write('B8', '*')
-        worksheet.write('B9', '*')
-        worksheet.write('B10', '*')
+        worksheet.write('B3', self.env.company.vat or '')
+        worksheet.write('B4', len(self.line_ids))
+        worksheet.write('B5', self.amount_total)
+        worksheet.write('B6', 'Proveedores')
+        worksheet.write('B7', 'PAGO_DE_PROVEEDORES')
+        worksheet.write('B8', self.partner_bank_id.acc_number or '')
+        worksheet.write('B9', 'TRASPASO A BCI')
+        worksheet.write('B10', 'TRASPASO DESDE ITAU')
         ############
         worksheet.write('A12', 'Rut Beneficiario', bold)
         worksheet.write('B12', 'Nombre Benefeciario', bold)
@@ -127,13 +133,17 @@ class PayrollPayment(models.Model):
         col = 0
         # Iterate over the data and write it out row by row.
         for line in self.line_ids:
-            worksheet.write(row, col, '*')
-            worksheet.write(row, col + 1, '*')
-            worksheet.write(row, col + 2, '*')
-            worksheet.write(row, col + 3, '*')
-            worksheet.write(row, col + 4, '*')
-            worksheet.write(row, col + 5, '*')
-            worksheet.write(row, col + 6, '*')
+            worksheet.write(row, col, line.move_id.partner_id.vat or '')
+            worksheet.write(row, col + 1, line.move_id.partner_id.name or '')
+            worksheet.write(row, col + 2, line.amount_total)
+            worksheet.write(row, col + 3, 'Abono en cuenta *')
+            worksheet.write(row, col + 4, line.move_id.partner_bank_id.bank_id.payroll_code or '')
+            worksheet.write(row, col + 5, 'Cuenta corriente *')
+            worksheet.write(row, col + 6, line.move_id.partner_bank_id.acc_number or '')
+            worksheet.write(row, col + 7, line.move_id.partner_id.email or '')
+            worksheet.write(row, col + 8, 'TRASPASO DESDE ITAU A BCI')
+            worksheet.write(row, col + 9, 'TRASPASO A BCI')
+            worksheet.write(row, col + 10, 'TRASPASO ENTRE CUENTAS ITAU A BCI')
             row += 1
         workbook.close()
         
