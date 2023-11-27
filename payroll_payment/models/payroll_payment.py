@@ -152,25 +152,35 @@ class PayrollPayment(models.Model):
         # Add a bold format to use to highlight cells.
         bold = workbook.add_format({'bold': True})
         # Write some data headers.
-        worksheet.write('A1', 'Fecha', bold)
-        worksheet.write('B1', 'Código', bold)
-        worksheet.write('C1', 'Nombre', bold)
-        worksheet.write('D1', 'Cédula', bold)
-        worksheet.write('E1', 'Cuenta', bold)
-        worksheet.write('F1', 'Banco', bold)
-        worksheet.write('G1', 'Monto', bold)
+        worksheet.write('A1', 'Rut Proveedor Beneficiario', bold)
+        worksheet.write('B1', 'Nombre/Razón Social Beneficiario', bold)
+        worksheet.write('C1', 'Tipo Documento', bold)
+        worksheet.write('D1', 'Nº Referencia/Documento', bold)
+        worksheet.write('E1', 'Monto Descuento', bold)
+        worksheet.write('F1', 'Subtotal', bold)
+        worksheet.write('G1', 'Forma Pago', bold)
+        worksheet.write('H1', 'Nº Cuenta de Abono', bold)
+        worksheet.write('I1', 'Banco Destino', bold)
+        worksheet.write('J1', 'Cód. Suc', bold)
+        worksheet.write('K1', 'Email Aviso', bold)
+        worksheet.write('L1', 'Mensaje Aviso', bold)
         # Start from the first cell below the headers.
         row = 1
         col = 0
         # Iterate over the data and write it out row by row.
         for line in self.line_ids:
-            worksheet.write(row, col, '*')
-            worksheet.write(row, col + 1, '*')
+            worksheet.write(row, col, line.move_id.partner_id.vat or '')
+            worksheet.write(row, col + 1, line.move_id.partner_id.name or '')
             worksheet.write(row, col + 2, '*')
-            worksheet.write(row, col + 3, '*')
+            worksheet.write(row, col + 3, line.move_id.name or '')
             worksheet.write(row, col + 4, '*')
             worksheet.write(row, col + 5, '*')
             worksheet.write(row, col + 6, '*')
+            worksheet.write(row, col + 7, line.move_id.partner_bank_id.acc_number or '')
+            worksheet.write(row, col + 8, line.move_id.partner_bank_id.bank_id.name or '')
+            worksheet.write(row, col + 9, '*')
+            worksheet.write(row, col + 10, line.move_id.partner_id.email or '')
+            worksheet.write(row, col + 11, '*')
             row += 1
         workbook.close()
         
