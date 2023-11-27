@@ -81,7 +81,7 @@ class PayrollPayment(models.Model):
             worksheet.write(row, col + 1, line.move_id.partner_bank_id.acc_number or '')
             worksheet.write(row, col + 2, line.move_id.partner_bank_id.bank_id.payroll_code or '')
             worksheet.write(row, col + 3, line.move_id.partner_id.vat or '')
-            worksheet.write(row, col + 4, line.move_id.partner_id and line.move_id.partner_id.vat[-1] or '')
+            worksheet.write(row, col + 4, line.move_id.partner_id.vat and line.move_id.partner_id.vat[-1] or '')
             worksheet.write(row, col + 5, line.move_id.partner_id.name or '')
             worksheet.write(row, col + 6, line.amount_total)
             worksheet.write(row, col + 7, line.move_id.name or '')
