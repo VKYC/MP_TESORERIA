@@ -45,8 +45,8 @@ class PayrollPaymentLine(models.Model):
     
     def unlink(self):
         for record in self:
-            if record.payroll_payment_id and record.payroll_payment_id.state != 'draft':
-                raise ValidationError(_('No se puede eliminar una factura que ya ha sido enviada.'))
+            if not self.user_has_groups('base.group_system') and record.payroll_payment_id and record.payroll_payment_id.state == 'send':
+                raise ValidationError(_('No se puede eliminar una factura que ya ha sido enviada a menos que seas administrador.'))
             record.move_id.payroll_payment_id = False
         return super(PayrollPaymentLine, self).unlink()
     
@@ -57,6 +57,7 @@ class PayrollPaymentLine(models.Model):
         }
         self.move_id.to_check = True
         context.update(self.env.context)
+        self.unlink()
         view_id = self.env.ref("payroll_payment.account_move_observation_view_form").id
         return {
             "type": "ir.actions.act_window",
