@@ -11,6 +11,15 @@ class AccountMove(models.Model):
     mp_grupo_flujo_ids = fields.Many2many(related="mp_flujo_id.grupo_flujo_ids")
     mp_grupo_flujo_id = fields.Many2one(comodel_name="mp.grupo.flujo", domain="[('id', 'in', mp_grupo_flujo_ids)]")
     observation = fields.Text(string='Observación')
+    observation_state = fields.Selection([('observed', 'Observado'), ('without_observation', 'Sin observación')]  ,string='Estado de la observación', compute='_compute_observation_state', store=True)
+    
+    @api.depends('observation')
+    def _compute_observation_state(self):
+        for record in self:
+            if record.observation:
+                record.observation_state = 'observed'
+            else:
+                record.observation_state = 'without_observation'
     
     def to_payroll(self):
         move_ids = self.env.context.get('active_ids', [])
@@ -55,11 +64,13 @@ class AccountMove(models.Model):
     def write(self, vals):
         if 'payroll_payment_id' in vals:
             for record in self:
-                if record.payroll_payment_id and record.payroll_payment_id.state != 'draft':
+                # if record.payroll_payment_id and record.payroll_payment_id.state != 'draft':
+                if not self.user_has_groups('base.group_system') and record.payroll_payment_id and record.payroll_payment_id.state != 'draft':
                     raise ValidationError(_('No se puede cambiar la nómina de una factura que ya ha sido enviada.'))
                 else:
                     line = record.payroll_payment_id.line_ids.filtered(lambda line: line.move_id.id == record.id)
-                    if vals.get('payroll_payment_id') != False and line.exists():
+                    if vals.get('payroll_payment_id') == False and line.exists():
+                        super(AccountMove, record).write(vals)
                         line.unlink()
                     if vals.get('payroll_payment_id'):
                         self.env['payroll.payment.line'].create({

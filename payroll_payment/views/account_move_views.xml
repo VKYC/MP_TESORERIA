@@ -8,6 +8,7 @@
             <xpath expr="//field[@name='name']" position="before">
                 <field name="for_payroll" optional="hide" widget="boolean_toggle"/>
                 <field name="payroll_payment_id"/>
+                <field name="observation_state" widget="badge" decoration-danger="observation_state == 'observed'" decoration-success="observation_state == 'without_observation'"/>
             </xpath>
         </field>
     </record>
@@ -27,11 +28,17 @@
                 <page name="observation" string="Nómina">
                     <group>
                         <group>
-                            <field name="observation"/>
+                            <field name="observation" readonly="1"/>
+                            <field name="observation_state" invisible="1"/>
                         </group>
                         <group></group>
                     </group>
                 </page>
+            </xpath>
+            <xpath expr="//div[1]" position="before">
+                <div class="alert alert-warning mb-0" role="alert" attrs="{'invisible': [('observation_state', '=', 'without_observation')]}">
+                    <field name="observation_state"/>
+                </div>
             </xpath>
         </field>
     </record>
