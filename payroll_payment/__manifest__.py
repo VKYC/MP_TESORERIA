@@ -17,6 +17,7 @@
         'views/account_move_views.xml',
         'views/res_bank_views.xml',
         'views/payroll_payment_views.xml',
+        'views/hr_expense_views.xml',
         'wizards/payroll_payment_wizard_views.xml',
         'wizards/warning_views.xml',
         'wizards/account_move_observation_views.xml',
