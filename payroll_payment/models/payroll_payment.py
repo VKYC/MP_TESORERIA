@@ -191,10 +191,7 @@ class PayrollPayment(models.Model):
         workbook = xlsxwriter.Workbook(output)
         # Modifica el excel según el banco seleccionado
         if self.partner_bank_id.bank_id.format_template_xlsx:
-            try:
                 getattr(self, f'format_template_xlsx_{self.partner_bank_id.bank_id.format_template_xlsx}')(workbook)
-            except Exception as e:
-                raise ValidationError(_(e))
         else:
             raise ValidationError(_('No existe una plantilla para el banco seleccionado.'))
         output.seek(0)
@@ -205,19 +202,24 @@ class PayrollPayment(models.Model):
         # self.payroll_xlsx = output.read().encode('base64')
         self.payroll_xlsx_filename = filename
         
+        
     def convert_approved(self):
         self.state = 'approved'
     
     def print_payroll(self):
+        try:
         # construir excel
-        self.generate_payroll_xlsx()
-        download =  {
-            'type': 'ir.actions.act_url',
-            'url': '/web/content/payroll.payment/%s/payroll_xlsx/%s?download=true' % (self.id, self.payroll_xlsx_filename),
-            'target': 'self',
-        }
-        self.state = 'generation_payroll'
-        return download
+            self.generate_payroll_xlsx()
+        except Exception as e:
+            raise ValidationError(_(e))
+        else:
+            download =  {
+                'type': 'ir.actions.act_url',
+                'url': '/web/content/payroll.payment/%s/payroll_xlsx/%s?download=true' % (self.id, self.payroll_xlsx_filename),
+                'target': 'self',
+            }
+            self.state = 'generation_payroll'
+            return download
     
     def convert_to_done(self):
         self.state = 'done'
