@@ -33,11 +33,5 @@
         <field name="view_mode">form</field>
         <field name="target">new</field>
     </record>
-    <record id="account_move_action_server" model="ir.actions.server">
-        <field name="name">A nómina</field>
-        <field name="model_id" ref="model_account_move"/>
-        <field name="binding_model_id" ref="model_account_move"/>
-        <field name="state">code</field>
-        <field name="code">record.to_payroll()</field>
-    </record>
+    <!-- <record id="account_move_action_server" model="ir.actions.server"> <field name="name">A nómina</field> <field name="model_id" ref="model_account_move"/> <field name="binding_model_id" ref="model_account_move"/> <field name="state">code</field> <field name="code">record.to_payroll()</field> </record> -->
 </odoo>
