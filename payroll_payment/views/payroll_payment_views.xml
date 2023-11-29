@@ -36,8 +36,9 @@
                                 <tree editable="bottom">
                                     <field name="move_id"/>
                                     <field name="date"/>
-                                    <field name="mp_flujo_id" options="{'no_create': True}"/>
+                                    <field name="partner_id"/>
                                     <field name="mp_grupo_flujo_id" options="{'no_create': True}"/>
+                                    <field name="mp_flujo_id" options="{'no_create': True}"/>
                                     <field name="mp_grupo_flujo_ids" invisible="1"/>
                                     <field name="amount_total"/>
                                     <field name="state"/>
@@ -49,8 +50,9 @@
                                 <tree editable="bottom">
                                     <field name="move_id"/>
                                     <field name="date"/>
-                                    <field name="mp_flujo_id" options="{'no_create': True}"/>
+                                    <field name="partner_id"/>
                                     <field name="mp_grupo_flujo_id" options="{'no_create': True}"/>
+                                    <field name="mp_flujo_id" options="{'no_create': True}"/>
                                     <field name="mp_grupo_flujo_ids" invisible="1"/>
                                     <field name="amount_total"/>
                                     <field name="state"/>

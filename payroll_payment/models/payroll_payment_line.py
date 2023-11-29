@@ -15,6 +15,7 @@ class PayrollPaymentLine(models.Model):
     mp_grupo_flujo_id = fields.Many2one(comodel_name="mp.grupo.flujo", domain="[('id', 'in', mp_grupo_flujo_ids)]", related='move_id.mp_grupo_flujo_id', store=True, readonly=False)
     payroll_payment_id = fields.Many2one('payroll.payment', string='Nómina')
     to_check = fields.Boolean(string='A revisar', related='move_id.to_check')
+    partner_id = fields.Many2one('res.partner', string='Proveedor', related='move_id.partner_id', readonly=False)
     
     _sql_constraints = [
         ("move_unique", "unique(move_id)", "La factura ya se encuentra en una nómina."),
