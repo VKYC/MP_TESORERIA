@@ -15,6 +15,11 @@
                     <field name="state" widget="statusbar" statusbar_visible="draft,send,approved,generation_payroll,done"/>
                 </header>
                 <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_line_ids" type="object" class="oe_stat_button" icon="fa-truck">
+                            <field name="lines_count" string="Detalle" widget="statinfo"/>
+                        </button>
+                    </div>
                     <group>
                         <group>
                             <field name="name"/>
@@ -58,7 +63,6 @@
                                     <field name="state"/>
                                     <field name="to_check" invisible="1"/>
                                     <button name="action_review" string="Revisar" type="object" icon="fa-ban text-success" attrs="{'invisible': [ ('parent.state', '!=', 'send')]}"/>
-                                    <!-- <button name="action_review" string="Revisar" type="object" icon="fa-ban text-success" attrs="{'invisible': ['|', ('parent.state', '!=', 'send'), ('to_check', '=', True)]}"/> -->
                                 </tree>
                             </field>
                         </page>
@@ -81,6 +85,33 @@
             </tree>
         </field>
     </record>
+    <record id="payroll_payment_line_view_tree" model="ir.ui.view">
+        <field name="name">payroll.payment.line.view.tree</field>
+        <field name="model">payroll.payment.line</field>
+        <field name="arch" type="xml">
+            <tree string="Detalle de pago de nómina">
+                <field name="move_id"/>
+                <field name="date"/>
+                <field name="partner_id"/>
+                <field name="mp_grupo_flujo_id"/>
+                <field name="mp_flujo_id"/>
+                <field name="mp_grupo_flujo_ids" invisible="1"/>
+                <field name="amount_total"/>
+                <field name="state"/>
+                <field name="to_check" invisible="1"/>
+            </tree>
+        </field>
+    </record>
+    <record id="payroll_payment_line_action" model="ir.actions.act_window">
+        <field name="name">Detalle de pago de nóminas</field>
+        <field name="res_model">payroll.payment.line</field>
+        <field name="view_mode">tree</field>
+        <field name="domain">[]</field>
+        <field name="context">{}</field>
+        <field name="help" type="html">
+            <p></p>
+        </field>
+    </record>
     <record id="payroll_payment_action" model="ir.actions.act_window">
         <field name="name">Pago de nómina</field>
         <field name="res_model">payroll.payment</field>
@@ -90,6 +121,15 @@
         <field name="help" type="html">
             <p></p>
         </field>
+    </record>
+    <record id="assign_flow_group_action" model="ir.actions.act_window">
+        <field name="name">Asignar grupo flujo</field>
+        <field name="binding_model_id" ref="payroll_payment.model_payroll_payment_line"/>
+        <field name="res_model">assign.flow.group</field>
+        <field name="binding_view_types">list</field>
+        <field name="view_id" ref="assign_flow_group_view_form"/>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
     </record>
     <menuitem id="payroll_payment_menu" name="Pago de nómina" action="payroll_payment_action" parent="account.menu_finance_payables" sequence="10"/>
 </odoo>

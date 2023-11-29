@@ -21,6 +21,7 @@
         'wizards/payroll_payment_wizard_views.xml',
         'wizards/warning_views.xml',
         'wizards/account_move_observation_views.xml',
+        'wizards/assign_flow_group_views.xml',
     ],
     'demo': [
 

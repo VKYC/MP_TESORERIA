@@ -25,6 +25,12 @@ class PayrollPayment(models.Model):
     amount_total =  fields.Monetary(string='Total', currency_field='currency_id', compute='_compute_amount_total')
     payroll_xlsx = fields.Binary(string='Nómina XLSX')
     payroll_xlsx_filename = fields.Char(string='Nombre del archivo XLSX')
+    lines_count = fields.Integer(compute='_compute_lines_count', string='Numero de factura')
+    
+    @api.depends('line_ids')
+    def _compute_lines_count(self):
+        for record in self:
+            record.lines_count = len(record.line_ids)
     
     @api.depends('line_ids', 'line_ids.amount_total')
     def _compute_amount_total(self):
@@ -226,3 +232,9 @@ class PayrollPayment(models.Model):
     
     def convert_to_draft(self):
         self.state = 'draft'
+        
+    def action_view_line_ids(self):
+        self.ensure_one()
+        action = self.env.ref('payroll_payment.payroll_payment_line_action').read()[0]
+        action['domain'] = [('payroll_payment_id', '=', self.id)]
+        return action

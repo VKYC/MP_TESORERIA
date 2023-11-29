@@ -70,3 +70,4 @@ class PayrollPaymentLine(models.Model):
             "target": "new",
             "context": context,
         }
+    
