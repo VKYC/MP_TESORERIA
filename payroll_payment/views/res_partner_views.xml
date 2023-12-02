@@ -10,6 +10,7 @@
                     <!-- attrs="{'invisible': [('bank_ids', '!=', False)]}" -->
                     <field name="is_payroll"/>
                     <field name="blocked_for_payments"/>
+                    <field name="blocked_for_purchases"/>
                 </group>
             </xpath>
         </field>
