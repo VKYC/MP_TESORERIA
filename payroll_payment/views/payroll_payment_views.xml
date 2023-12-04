@@ -33,6 +33,7 @@
                             <field name='amount_total'/>
                             <field name="payroll_xlsx" filename="payroll_xlsx_filename"/>
                             <field name="payroll_xlsx_filename" invisible="1"/>
+                            <field name="move_id" attrs="{'invisible': [ ('state', '!=', 'done')]}"/>
                         </group>
                     </group>
                     <notebook>

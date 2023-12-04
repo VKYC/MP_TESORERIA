@@ -26,6 +26,7 @@ class PayrollPayment(models.Model):
     payroll_xlsx = fields.Binary(string='Nómina XLSX')
     payroll_xlsx_filename = fields.Char(string='Nombre del archivo XLSX')
     lines_count = fields.Integer(compute='_compute_lines_count', string='Numero de factura')
+    move_id = fields.Many2one('account.move', string='Apunte de Contable')
     
     @api.depends('line_ids')
     def _compute_lines_count(self):
@@ -228,6 +229,61 @@ class PayrollPayment(models.Model):
             return download
     
     def convert_to_done(self):
+        journal_id = self.env['account.journal'].search([('type', '=', 'bank')], limit=1)
+        account_debit = self.env.company.account_debit_id
+        account_credit = self.env.company.account_credit_id
+        if not journal_id:
+            raise ValidationError(_('No existe un diario de tipo banco.'))
+        if not account_debit:
+            raise ValidationError(_('No existe una cuenta de débito.'))
+        if not account_credit:
+            raise ValidationError(_('No existe una cuenta de crédito.'))
+        # crear asientos contables y apuntes contables
+        self.move_id = self.env['account.move'].sudo().create({
+            'state': 'draft',
+            'date': self.date,
+            'journal_id': journal_id.id,
+            'name': self.name,
+        })
+        list_line_ids = []
+        for line in self.line_ids:
+            list_line_ids.append(
+                (0, 0, {
+                    'account_id': account_debit.id,
+                    'account_root_id': account_debit.id,
+                    'name': f'Pago de nómina {line.move_id.name} debit',
+                    'display_type': False,
+                    'debit': line.amount_total,
+                    'credit': 0,
+                    'sequence': 0,
+                    'amount_currency': 0,
+                    'currency_id': self.currency_id.id,
+                    'analytic_account_id': False,
+                    'analytic_tag_ids': False,
+                    'company_currency_id': self.currency_id.id,
+                    'quantity': 1,
+                    'product_id': False,
+                })
+            )
+            list_line_ids.append(
+                (0, 0, {
+                    'account_id': account_credit.id,
+                    'account_root_id': account_credit.id,
+                    'name': f'Pago de nómina {line.move_id.name} credit',
+                    'display_type': False,
+                    'debit': 0,
+                    'credit': line.amount_total,
+                    'sequence': 0,
+                    'amount_currency': 0,
+                    'currency_id': self.currency_id.id,
+                    'analytic_account_id': False,
+                    'analytic_tag_ids': False,
+                    'company_currency_id': self.currency_id.id,
+                    'quantity': 1,
+                    'product_id': False,
+                })
+            )
+        self.move_id.sudo().line_ids = list_line_ids
         self.state = 'done'
     
     def convert_to_draft(self):
