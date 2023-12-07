@@ -8,7 +8,7 @@
     'license': 'LGPL-3',
     'category': '',
     'depends': [
-        'account', 'base', 'account_payment_flow', 'purchase', 'base_setup'
+        'account', 'base', 'account_payment_flow', 'purchase', 'base_setup', 'hr_expense'
     ],
     'data': [
         'data/ir_sequence.xml',
