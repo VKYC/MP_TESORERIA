@@ -48,7 +48,7 @@ class AccountMove(models.Model):
             if not self.partner_id.is_payroll:
                 raise ValidationError(_('El proveedor no es de nómina.'))
             if not self.partner_bank_id:
-                raise ValidationError(_('El proveedor no tiene banco asociado.'))
+                raise ValidationError(_('La factura no tiene un banco destinatario asociado.'))
             if self.payment_state != 'not_paid':
                 raise ValidationError(_('La factura ya ha sido pagada.'))
             
