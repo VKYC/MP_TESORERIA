@@ -22,7 +22,7 @@
         'views/res_bank_views.xml',
         'views/payroll_payment_views.xml',
         'views/hr_expense_views.xml',
-        'views/res_config_settings_views.xml',
+        # 'views/res_config_settings_views.xml',
     ],
     'demo': [
 

@@ -229,15 +229,16 @@ class PayrollPayment(models.Model):
             return download
     
     def convert_to_done(self):
-        journal_id = self.env['account.journal'].search([('type', '=', 'bank')], limit=1)
-        account_debit = self.env.company.account_debit_id
-        account_credit = self.env.company.account_credit_id
+        journal_id = self.env['account.journal'].search([('bank_account_id', '=', self.partner_bank_id.id)], limit=1)
+        # account_debit = self.env.company.account_debit_id
+        # account_credit = self.env.company.account_credit_id
+        account_debit = journal_id.default_account_id
         if not journal_id:
             raise ValidationError(_('No existe un diario de tipo banco.'))
         if not account_debit:
             raise ValidationError(_('No existe una cuenta de débito.'))
-        if not account_credit:
-            raise ValidationError(_('No existe una cuenta de crédito.'))
+        # if not account_credit:
+        #     raise ValidationError(_('No existe una cuenta de crédito.'))
         # crear asientos contables y apuntes contables
         self.move_id = self.env['account.move'].sudo().create({
             'state': 'draft',
@@ -247,6 +248,9 @@ class PayrollPayment(models.Model):
         })
         list_line_ids = []
         for line in self.line_ids:
+            account_credit = line.move_id.partner_id.property_account_payable_id
+            if not account_credit:
+                raise ValidationError(_('No existe una cuenta de crédito.'))
             list_line_ids.append(
                 (0, 0, {
                     'account_id': account_debit.id,
