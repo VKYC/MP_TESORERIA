@@ -232,10 +232,10 @@ class PayrollPayment(models.Model):
         journal_id = self.env['account.journal'].search([('bank_account_id', '=', self.partner_bank_id.id)], limit=1)
         # account_debit = self.env.company.account_debit_id
         # account_credit = self.env.company.account_credit_id
-        account_debit = journal_id.default_account_id
+        account_credit = journal_id.default_account_id
         if not journal_id:
             raise ValidationError(_('No existe un diario de tipo banco.'))
-        if not account_debit:
+        if not account_credit:
             raise ValidationError(_('No existe una cuenta de débito.'))
         # if not account_credit:
         #     raise ValidationError(_('No existe una cuenta de crédito.'))
@@ -248,7 +248,7 @@ class PayrollPayment(models.Model):
         })
         list_line_ids = []
         for line in self.line_ids:
-            account_credit = line.move_id.partner_id.property_account_payable_id
+            account_debit = line.move_id.partner_id.property_account_payable_id
             if not account_credit:
                 raise ValidationError(_('No existe una cuenta de crédito.'))
             list_line_ids.append(
@@ -269,24 +269,24 @@ class PayrollPayment(models.Model):
                     'product_id': False,
                 })
             )
-            list_line_ids.append(
-                (0, 0, {
-                    'account_id': account_credit.id,
-                    'account_root_id': account_credit.id,
-                    'name': f'Pago de nómina {line.move_id.name} credit',
-                    'display_type': False,
-                    'debit': 0,
-                    'credit': line.amount_total,
-                    'sequence': 0,
-                    'amount_currency': 0,
-                    'currency_id': self.currency_id.id,
-                    'analytic_account_id': False,
-                    'analytic_tag_ids': False,
-                    'company_currency_id': self.currency_id.id,
-                    'quantity': 1,
-                    'product_id': False,
-                })
-            )
+        list_line_ids.append(
+            (0, 0, {
+                'account_id': account_credit.id,
+                'account_root_id': account_credit.id,
+                'name': f'Pago de nómina {self.partner_bank_id.acc_number} credit',
+                'display_type': False,
+                'debit': 0,
+                'credit': self.amount_total,
+                'sequence': 0,
+                'amount_currency': 0,
+                'currency_id': self.currency_id.id,
+                'analytic_account_id': False,
+                'analytic_tag_ids': False,
+                'company_currency_id': self.currency_id.id,
+                'quantity': 1,
+                'product_id': False,
+            })
+        )
         self.move_id.sudo().line_ids = list_line_ids
         self.state = 'done'
     
