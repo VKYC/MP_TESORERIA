@@ -34,6 +34,15 @@
                         <group></group>
                     </group>
                 </page>
+                <page name="period_retention" string="Período de retención">
+                    <group>
+                        <group>
+                            <field name="start_date_retention"/>
+                            <field name="end_date_retention"/>
+                        </group>
+                        <group></group>
+                    </group>
+                </page>
             </xpath>
             <xpath expr="//div[1]" position="before">
                 <div class="alert alert-danger mb-0" role="alert" attrs="{'invisible': [('observation_state', '=', 'without_observation')]}">

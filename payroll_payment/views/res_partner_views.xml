@@ -11,6 +11,8 @@
                     <field name="is_payroll"/>
                     <field name="blocked_for_payments"/>
                     <field name="blocked_for_purchases"/>
+                    <field name="subject_discount"/>
+                    <field name="percentage_discount" attrs="{'invisible': [('subject_discount', '=', False)]}"/>
                 </group>
             </xpath>
         </field>

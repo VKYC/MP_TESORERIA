@@ -12,6 +12,8 @@ class AccountMove(models.Model):
     mp_grupo_flujo_id = fields.Many2one(comodel_name="mp.grupo.flujo", domain="[('id', 'in', mp_grupo_flujo_ids)]")
     observation = fields.Text(string='Observación')
     observation_state = fields.Selection([('observed', 'Observado'), ('without_observation', 'Sin observación')]  ,string='Estado de la observación', compute='_compute_observation_state', store=True)
+    start_date_retention = fields.Date(string='Fecha de inicio de retención', related='invoice_date')
+    end_date_retention = fields.Date(string='Fecha de fin de retención')
     
     @api.depends('observation')
     def _compute_observation_state(self):
