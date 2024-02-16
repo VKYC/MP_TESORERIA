@@ -11,3 +11,4 @@ class ResPartner(models.Model):
     subject_discount = fields.Boolean(string='Sujeto a descuento', default=False)
     percentage_discount = fields.Float(string='Porcentaje de descuento', default=0.0)
     retention_account_id = fields.Many2one(comodel_name="account.account", string="Cuenta de retención")
+    conciliar_si = fields.Boolean(string="Conciliar SI?", default=False)
