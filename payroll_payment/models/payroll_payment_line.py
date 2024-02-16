@@ -13,7 +13,7 @@ class PayrollPaymentLine(models.Model):
     mp_flujo_id = fields.Many2one(comodel_name="mp.flujo", related='move_id.mp_flujo_id', store=True, readonly=False, domain="[('grupo_flujo_ids', 'in', mp_grupo_flujo_id)]")
     mp_grupo_flujo_ids = fields.Many2many(related="mp_flujo_id.grupo_flujo_ids")
     # mp_grupo_flujo_id = fields.Many2one(comodel_name="mp.grupo.flujo", domain="[('id', 'in', mp_grupo_flujo_ids)]", related='move_id.mp_grupo_flujo_id', store=True, readonly=False)
-    mp_grupo_flujo_id = fields.Many2one(comodel_name="mp.grupo.flujo", related='move_id.mp_grupo_flujo_id', store=True, readonly=False)
+    mp_grupo_flujo_id = fields.Many2one(comodel_name="mp.grupo.flujo", related='move_id.mp_grupo_flujo_id', store=True, readonly=False, domain="[]")
     payroll_payment_id = fields.Many2one('payroll.payment', string='Nómina')
     to_check = fields.Boolean(string='A revisar', related='move_id.to_check')
     partner_id = fields.Many2one('res.partner', string='Proveedor', related='move_id.partner_id', readonly=False)
@@ -40,10 +40,15 @@ class PayrollPaymentLine(models.Model):
         if self.move_id and len(self.move_id.partner_id.bank_ids) == 0:
             raise ValidationError(_('El proveedor no tiene bancos asociados.'))
     
-    @api.onchange("mp_flujo_id")
+    # @api.onchange("mp_flujo_id")
+    # def _onchange_mp_flujo_id(self):
+    #     for register_id in self:
+    #         register_id.mp_grupo_flujo_id = self.env['mp.grupo.flujo']
+            
+    @api.onchange("mp_grupo_flujo_id")
     def _onchange_mp_flujo_id(self):
         for register_id in self:
-            register_id.mp_grupo_flujo_id = self.env['mp.grupo.flujo']
+            register_id.mp_flujo_id = self.env['mp.flujo']
     
     def unlink(self):
         for record in self:
