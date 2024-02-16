@@ -17,6 +17,7 @@ class PayrollPayment(models.Model):
         ('generation_payroll', 'Generación de nómina'), 
         ('done', 'Procesado')
         ], string='Estado', default='draft')
+    payroll_payment_type_id = fields.Many2one('payroll.payment.type', string='Tipo de nómina')
     number_of_invoices = fields.Integer('Cantidad de facturas', compute='_compute_number_of_invoices')
     partner_bank_id = fields.Many2one('res.partner.bank', string='Banco')
     # move_ids = fields.One2many('account.move', 'payroll_payment_id', string='Facturas')

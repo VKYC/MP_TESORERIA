@@ -26,6 +26,7 @@
                             <field name="date"/>
                             <field name="currency_id"/>
                             <field name="budget"/>
+                            <field name="payroll_payment_type_id" options="{'no_create': True}"/>
                         </group>
                         <group>
                             <field name='number_of_invoices'/>
