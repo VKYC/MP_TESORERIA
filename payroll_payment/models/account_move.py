@@ -116,7 +116,7 @@ class AccountMove(models.Model):
 
     def add_line_detraction(self):
         if not self.partner_id.retention_account_id:
-            raise UserError('Configurar cuenta para pago de retenciones.')
+            raise UserError('El proveedor seleccionado esta sujeto a descuento y no tiene una cuenta para pago de retenciones. Por favor, configurar cuenta.')
 
         retention_account_id = self.partner_id.retention_account_id
         line_credit = self.line_ids.filtered(lambda line: line.exclude_from_invoice_tab and line.account_id != retention_account_id and line.credit > 0)
