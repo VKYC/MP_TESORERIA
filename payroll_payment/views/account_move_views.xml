@@ -43,6 +43,8 @@
                         <group>
                             <field name="start_date_retention"/>
                             <field name="end_date_retention"/>
+                            <field name="percentage_discount" invisible="1"/>
+                            <field name="retention_amount" invisible="1"/>
                         </group>
                         <group></group>
                     </group>

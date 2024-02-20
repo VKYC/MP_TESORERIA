@@ -52,7 +52,7 @@ class PayrollPayment(models.Model):
             vals['name'] = self.env['ir.sequence'].next_by_code('payroll.payment') or _('New')
         result = super(PayrollPayment, self).create(vals)
         return result
-    
+
     def convert_to_send(self):
         if self.amount_total > self.budget:
             raise ValidationError(_('El monto total de las facturas es mayor al presupuesto.'))
@@ -62,7 +62,7 @@ class PayrollPayment(models.Model):
             raise ValidationError(_('Debe seleccionar un grupo y flujo para todas las facturas.'))
         if self.line_ids and all(self.line_ids.mapped(lambda r: bool(r.mp_flujo_id) and bool(r.mp_grupo_flujo_id))) and self.amount_total <= self.budget:
             self.state = 'send'
-            
+
     def format_template_xlsx_bci(self, workbook):
         worksheet = workbook.add_worksheet('Nómina')
         # Add a bold format to use to highlight cells.
