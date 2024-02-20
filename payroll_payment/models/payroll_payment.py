@@ -28,6 +28,8 @@ class PayrollPayment(models.Model):
     payroll_xlsx_filename = fields.Char(string='Nombre del archivo XLSX')
     lines_count = fields.Integer(compute='_compute_lines_count', string='Numero de factura')
     move_id = fields.Many2one('account.move', string='Apunte de Contable')
+    observations = fields.Text('Observaciones')
+    payroll_name = fields.Char('Nombre de la nómina')
     
     @api.depends('line_ids')
     def _compute_lines_count(self):
