@@ -91,10 +91,11 @@ class AccountMove(models.Model):
             raise ValidationError(_('El proveedor se encuentra bloqueado para pagos.'))
 
     def action_register_payment(self):
-        if self.partner_id.blocked_for_payments:
-            raise ValidationError(_('El proveedor se encuentra bloqueado para pagos.'))
-        if self.to_check:
-            raise ValidationError(_('La factura se encuentra en estado a revisar.'))
+        for record in self:
+            if record.partner_id.blocked_for_payments:
+                raise ValidationError(_(f'{record.partner_id.name} se encuentra bloqueado para pagos.'))
+            if record.to_check:
+                raise ValidationError(_(f'{record.name} se encuentra en estado a revisar.'))
         return super(AccountMove, self).action_register_payment()
 
     # * RETENCIONES
