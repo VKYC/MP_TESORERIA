@@ -22,20 +22,20 @@
                     </div>
                     <group>
                         <group>
-                            <field name="name"/>
-                            <field name="payroll_name"/>
-                            <field name="date"/>
-                            <field name="currency_id"/>
-                            <field name="budget"/>
-                            <field name="payroll_payment_type_id" options="{'no_create': True}"/>
+                            <field name="name" attrs="{'readonly': [('state', '=', 'done')]}"/>
+                            <field name="payroll_name" attrs="{'readonly': [('state', '=', 'done')]}"/>
+                            <field name="date" attrs="{'readonly': [('state', '=', 'done')]}"/>
+                            <field name="currency_id" attrs="{'readonly': [('state', '=', 'done')]}"/>
+                            <field name="budget" attrs="{'readonly': [('state', '=', 'done')]}"/>
+                            <field name="payroll_payment_type_id" options="{'no_create': True}" attrs="{'readonly': [('state', '=', 'done')]}"/>
                         </group>
                         <group>
-                            <field name='number_of_invoices'/>
-                            <field name='partner_bank_id'/>
-                            <field name='amount_total'/>
-                            <field name="payroll_xlsx" filename="payroll_xlsx_filename"/>
+                            <field name='number_of_invoices' attrs="{'readonly': [('state', '=', 'done')]}"/>
+                            <field name='partner_bank_id' attrs="{'readonly': [('state', '=', 'done')]}"/>
+                            <field name='amount_total' attrs="{'readonly': [('state', '=', 'done')]}"/>
+                            <field name="payroll_xlsx" filename="payroll_xlsx_filename" attrs="{'readonly': [('state', '=', 'done')]}"/>
                             <field name="payroll_xlsx_filename" invisible="1"/>
-                            <field name="move_id" attrs="{'invisible': [ ('state', '!=', 'done')]}"/>
+                            <field name="move_id" attrs="{'invisible': [ ('state', '!=', 'done')], 'readonly': [('state', '=', 'done')]}"/>
                             <field name='observations'/>
                         </group>
                     </group>
