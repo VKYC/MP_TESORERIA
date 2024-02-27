@@ -9,7 +9,7 @@ class AccountPaymentRegister(models.TransientModel):
     @api.depends('line_ids.amount_total', 'source_currency_id', 'currency_id')
     def _compute_amount_total(self):
         for wizard in self:
-            wizard.amount_total = wizard.company_id.currency_id._convert(wizard.line_ids.move_id.amount_total, wizard.currency_id, wizard.company_id, wizard.payment_date or fields.Date.today()) if len(wizard.line_ids) else 0.0
+            wizard.amount_total = wizard.company_id.currency_id._convert(sum(wizard.line_ids.move_id.mapped('amount_total')), wizard.currency_id, wizard.company_id, wizard.payment_date or fields.Date.today()) if len(wizard.line_ids) else 0.0
     
     def _compute_amount(self):
         super(AccountPaymentRegister, self)._compute_amount()
