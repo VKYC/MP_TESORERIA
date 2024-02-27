@@ -39,5 +39,5 @@
         <field name="domain">[]</field>
         <field name="context">{}</field>
     </record>
-    <menuitem id="freign_currency_centralization_line_menu" name="Detalle de centralización de moneda extranjera" action="foreign_currency_centralization_line_action" parent="account.menu_finance_reports" sequence="10"/>
+    <menuitem id="freign_currency_centralization_line_menu" name="Detalle de centralización de moneda extranjera" action="foreign_currency_centralization_line_action" parent="account.menu_finance_entries" sequence="10"/>
 </odoo>

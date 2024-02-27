@@ -31,5 +31,5 @@
         <field name="context">{}</field>
         <field name="target">new</field>
     </record>
-    <menuitem id="freign_currency_centralization_menu" name="Centralización de moneda extranjera" action="foreign_currency_centralization_action" parent="account.menu_finance_reports" sequence="9"/>
+    <menuitem id="freign_currency_centralization_menu" name="Centralización de moneda extranjera" action="foreign_currency_centralization_action" parent="account.menu_finance_entries" sequence="9"/>
 </odoo>
