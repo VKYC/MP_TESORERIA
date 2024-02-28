@@ -283,7 +283,8 @@ class PayrollPayment(models.Model):
             'state': 'draft',
             'date': self.date,
             'journal_id': journal_id.id,
-            'name': self.name,
+            'ref': self.name,
+            'name': '/',
         })
         list_line_ids = []
         for line in self.line_ids:
