@@ -25,17 +25,17 @@
                             <field name="name" attrs="{'readonly': [('state', '=', 'done')]}"/>
                             <field name="payroll_name" attrs="{'readonly': [('state', '=', 'done')]}"/>
                             <field name="date" attrs="{'readonly': [('state', '=', 'done')]}"/>
-                            <field name="currency_id" attrs="{'readonly': [('state', '=', 'done')]}"/>
+                            <field name="currency_id" attrs="{'readonly': [('state', '=', 'done')]}" options="{'no_open': True}"/>
                             <field name="budget" attrs="{'readonly': [('state', '=', 'done')]}"/>
-                            <field name="payroll_payment_type_id" options="{'no_create': True}" attrs="{'readonly': [('state', '=', 'done')]}"/>
+                            <field name="payroll_payment_type_id" options="{'no_create': True, 'no_open': True}" attrs="{'readonly': [('state', '=', 'done')]}"/>
                         </group>
                         <group>
                             <field name='number_of_invoices' attrs="{'readonly': [('state', '=', 'done')]}"/>
-                            <field name='partner_bank_id' attrs="{'readonly': [('state', '=', 'done')]}"/>
+                            <field name='partner_bank_id' attrs="{'readonly': [('state', '=', 'done')]}" options="{'no_open': True}"/>
                             <field name='amount_total' attrs="{'readonly': [('state', '=', 'done')]}"/>
                             <field name="payroll_xlsx" filename="payroll_xlsx_filename" attrs="{'readonly': [('state', '=', 'done')]}"/>
                             <field name="payroll_xlsx_filename" invisible="1"/>
-                            <field name="move_id" attrs="{'invisible': [ ('state', '!=', 'done')], 'readonly': [('state', '=', 'done')]}"/>
+                            <field name="move_id" attrs="{'invisible': [ ('state', '!=', 'done')], 'readonly': [('state', '=', 'done')]}" options="{'no_open': True}"/>
                             <field name='observations'/>
                         </group>
                     </group>
@@ -43,11 +43,11 @@
                         <page name="moves_not_system" string="Detalle" groups="!base.group_system">
                             <field name="line_ids" attrs="{'readonly': [('state', '!=', 'draft')]}">
                                 <tree editable="bottom">
-                                    <field name="move_id"/>
+                                    <field name="move_id" options="{'no_open': True}"/>
                                     <field name="date"/>
-                                    <field name="partner_id"/>
-                                    <field name="mp_grupo_flujo_id" options="{'no_create': True}"/>
-                                    <field name="mp_flujo_id" options="{'no_create': True}"/>
+                                    <field name="partner_id" options="{'no_open': True}"/>
+                                    <field name="mp_grupo_flujo_id" options="{'no_create': True, 'no_open': True}"/>
+                                    <field name="mp_flujo_id" options="{'no_create': True, 'no_open': True}"/>
                                     <field name="mp_grupo_flujo_ids" invisible="1"/>
                                     <field name="amount_total"/>
                                     <field name="state"/>
@@ -57,11 +57,11 @@
                         <page name="moves_system" string="Detalle" groups="base.group_system">
                             <field name="line_ids" attrs="{'readonly': [('state', 'not in', ['draft', 'send'])]}">
                                 <tree editable="bottom">
-                                    <field name="move_id"/>
+                                    <field name="move_id" options="{'no_open': True}"/>
                                     <field name="date"/>
-                                    <field name="partner_id"/>
-                                    <field name="mp_grupo_flujo_id" options="{'no_create': True}"/>
-                                    <field name="mp_flujo_id" options="{'no_create': True}"/>
+                                    <field name="partner_id" options="{'no_open': True}"/>
+                                    <field name="mp_grupo_flujo_id" options="{'no_create': True, 'no_open': True}"/>
+                                    <field name="mp_flujo_id" options="{'no_create': True, 'no_open': True}"/>
                                     <field name="mp_grupo_flujo_ids" invisible="1"/>
                                     <field name="amount_total"/>
                                     <field name="state"/>
