@@ -8,9 +8,10 @@
                 <sheet>
                     <group>
                         <group>
-                            <field name="name"/>
+                            <field name="name"/> 
+                            
                         </group>
-                        <group></group>
+                        <group><field name="is_remuneration"/> </group>
                     </group>
                 </sheet>
             </form>
@@ -22,6 +23,7 @@
         <field name="arch" type="xml">
             <tree string="Tipo de Nóminas">
                 <field name="name"/>
+                <field name="is_remuneration"/>
             </tree>
         </field>
     </record>

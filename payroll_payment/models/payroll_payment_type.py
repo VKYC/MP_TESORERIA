@@ -6,3 +6,4 @@ class PayrollPaymentType(models.Model):
         
     
     name = fields.Char(string='Nombre', required=True)
+    is_remuneration = fields.Boolean(string='Es Remuneración')
