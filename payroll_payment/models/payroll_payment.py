@@ -30,6 +30,7 @@ class PayrollPayment(models.Model):
     move_id = fields.Many2one('account.move', string='Apunte de Contable')
     observations = fields.Text('Observaciones')
     payroll_name = fields.Char('Nombre de la nómina')
+    is_remuneration = fields.Boolean(string='Es Remuneración', related='payroll_payment_type_id.is_remuneration')
     
     @api.depends('line_ids')
     def _compute_lines_count(self):
