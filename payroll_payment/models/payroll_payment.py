@@ -17,6 +17,7 @@ class PayrollPayment(models.Model):
         ('generation_payroll', 'Generación de nómina'), 
         ('done', 'Procesado')
         ], string='Estado', default='draft')
+    payroll_payment_type_id = fields.Many2one('payroll.payment.type', string='Tipo de nómina')
     number_of_invoices = fields.Integer('Cantidad de facturas', compute='_compute_number_of_invoices')
     partner_bank_id = fields.Many2one('res.partner.bank', string='Banco')
     # move_ids = fields.One2many('account.move', 'payroll_payment_id', string='Facturas')
@@ -27,6 +28,9 @@ class PayrollPayment(models.Model):
     payroll_xlsx_filename = fields.Char(string='Nombre del archivo XLSX')
     lines_count = fields.Integer(compute='_compute_lines_count', string='Numero de factura')
     move_id = fields.Many2one('account.move', string='Apunte de Contable')
+    observations = fields.Text('Observaciones')
+    payroll_name = fields.Char('Nombre de la nómina')
+    is_remuneration = fields.Boolean(string='Es Remuneración', related='payroll_payment_type_id.is_remuneration')
     
     @api.depends('line_ids')
     def _compute_lines_count(self):
@@ -49,7 +53,7 @@ class PayrollPayment(models.Model):
             vals['name'] = self.env['ir.sequence'].next_by_code('payroll.payment') or _('New')
         result = super(PayrollPayment, self).create(vals)
         return result
-    
+
     def convert_to_send(self):
         if self.amount_total > self.budget:
             raise ValidationError(_('El monto total de las facturas es mayor al presupuesto.'))
@@ -59,44 +63,80 @@ class PayrollPayment(models.Model):
             raise ValidationError(_('Debe seleccionar un grupo y flujo para todas las facturas.'))
         if self.line_ids and all(self.line_ids.mapped(lambda r: bool(r.mp_flujo_id) and bool(r.mp_grupo_flujo_id))) and self.amount_total <= self.budget:
             self.state = 'send'
-            
+
     def format_template_xlsx_bci(self, workbook):
         worksheet = workbook.add_worksheet('Nómina')
         # Add a bold format to use to highlight cells.
         bold = workbook.add_format({'bold': True})
         # Write some data headers.
-        worksheet.write('A1', 'Nº Cuenta de Cargo', bold)
-        worksheet.write('B1', 'Nº Cuenta de Destino', bold)
-        worksheet.write('C1', 'Banco Destino', bold)
-        worksheet.write('D1', 'Rut Benefeciario', bold)
-        worksheet.write('E1', 'Dig Verif. Benefeciario', bold)
-        worksheet.write('F1', 'Nombre Benefeciario', bold)
-        worksheet.write('G1', 'Monto Transferencia', bold)
-        worksheet.write('H1', 'Nº Factura Boleta', bold)
-        worksheet.write('I1', 'Nº Orden de Compra', bold)
-        worksheet.write('J1', 'Tipo de pago', bold)
-        worksheet.write('K1', 'Mensaje Destinatario', bold)
-        worksheet.write('L1', 'Email Destinatario', bold)
-        worksheet.write('M1', 'Cuenta Destino inscrita como', bold)
+        # worksheet.write('A1', 'Nº Cuenta de Cargo', bold)
+        # worksheet.write('B1', 'Nº Cuenta de Destino', bold)
+        # worksheet.write('C1', 'Banco Destino', bold)
+        # worksheet.write('D1', 'Rut Benefeciario', bold)
+        # worksheet.write('E1', 'Dig Verif. Benefeciario', bold)
+        # worksheet.write('F1', 'Nombre Benefeciario', bold)
+        # worksheet.write('G1', 'Monto Transferencia', bold)
+        # worksheet.write('H1', 'Nº Factura Boleta', bold)
+        # worksheet.write('I1', 'Nº Orden de Compra', bold)
+        # worksheet.write('J1', 'Tipo de pago', bold)
+        # worksheet.write('K1', 'Mensaje Destinatario', bold)
+        # worksheet.write('L1', 'Email Destinatario', bold)
+        # worksheet.write('M1', 'Cuenta Destino inscrita como', bold)
+        worksheet.write('A1', 'Unidad (Desagrupar)', bold)
+        worksheet.write('B1', 'RUT', bold)
+        worksheet.write('C1', 'Nombre Beneficiario', bold)
+        worksheet.write('D1', 'FP', bold)
+        worksheet.write('E1', 'BCO', bold)
+        worksheet.write('F1', 'Nº Cuenta Cte', bold)
+        worksheet.write('G1', 'Nº Documento', bold)
+        worksheet.write('H1', 'Monto a agar', bold)
+        worksheet.write('I1', 'Of BCI', bold)
+        worksheet.write('J1', 'Fecha', bold)
+        worksheet.write('K1', 'Rut retirado', bold)
+        worksheet.write('L1', 'Ap. paterno', bold)
+        worksheet.write('M1', 'Ap. materno', bold)
+        worksheet.write('N1', 'Nombre', bold)
+        worksheet.write('O1', 'Tipo', bold)
+        worksheet.write('P1', 'Glosa', bold)
+        worksheet.write('Q1', 'Email', bold)
+        worksheet.write('R1', 'Nº Documento Relacionado', bold)
         
         # Start from the first cell below the headers.
         row = 1
         col = 0
         # Iterate over the data and write it out row by row.
         for line in self.line_ids:
-            worksheet.write(row, col, self.partner_bank_id.acc_number or '')
-            worksheet.write(row, col + 1, line.move_id.partner_bank_id.acc_number or '')
-            worksheet.write(row, col + 2, line.move_id.partner_bank_id.bank_id.payroll_code or '')
-            worksheet.write(row, col + 3, line.move_id.partner_id.vat or '')
-            worksheet.write(row, col + 4, line.move_id.partner_id.vat and line.move_id.partner_id.vat[-1] or '')
-            worksheet.write(row, col + 5, line.move_id.partner_id.name or '')
-            worksheet.write(row, col + 6, line.amount_total)
-            worksheet.write(row, col + 7, line.move_id.name or '')
-            worksheet.write(row, col + 8, line.move_id.ref or '')
-            worksheet.write(row, col + 9, 'OTRO *')
-            worksheet.write(row, col + 10, 'PAGO FINIQUITO *')
-            worksheet.write(row, col + 11, line.move_id.partner_id.email or '')
-            worksheet.write(row, col + 12, line.move_id.partner_id.name or '')
+            # worksheet.write(row, col, self.partner_bank_id.acc_number or '')
+            # worksheet.write(row, col + 1, line.move_id.partner_bank_id.acc_number or '')
+            # worksheet.write(row, col + 2, line.move_id.partner_bank_id.bank_id.payroll_code or '')
+            # worksheet.write(row, col + 3, line.move_id.partner_id.vat or '')
+            # worksheet.write(row, col + 4, line.move_id.partner_id.vat and line.move_id.partner_id.vat[-1] or '')
+            # worksheet.write(row, col + 5, line.move_id.partner_id.name or '')
+            # worksheet.write(row, col + 6, line.amount_total)
+            # worksheet.write(row, col + 7, line.move_id.name or '')
+            # worksheet.write(row, col + 8, line.move_id.ref or '')
+            # worksheet.write(row, col + 9, 'OTRO *')
+            # worksheet.write(row, col + 10, 'PAGO FINIQUITO *')
+            # worksheet.write(row, col + 11, line.move_id.partner_id.email or '')
+            # worksheet.write(row, col + 12, line.move_id.partner_id.name or '')
+            worksheet.write(row, col, '')
+            worksheet.write(row, col + 1, line.move_id.partner_id.vat or '')
+            worksheet.write(row, col + 2, line.move_id.partner_id.name or '')
+            worksheet.write(row, col + 3, 'OTC')
+            worksheet.write(row, col + 4, '012')
+            worksheet.write(row, col + 5, line.move_id.partner_bank_id.acc_number or '')
+            worksheet.write(row, col + 6, '1')
+            worksheet.write(row, col + 7, line.move_id.amount_total or 0)
+            worksheet.write(row, col + 8, '')
+            worksheet.write(row, col + 9, line.move_id.date)
+            worksheet.write(row, col + 10, '')
+            worksheet.write(row, col + 11, '')
+            worksheet.write(row, col + 12, '')
+            worksheet.write(row, col + 13, '')
+            worksheet.write(row, col + 14, 'ABO')
+            worksheet.write(row, col + 15, 'DEVOLUCION MUNDO PACIFICO')
+            worksheet.write(row, col + 16, line.move_id.partner_id.email or '')
+            worksheet.write(row, col + 17, '')
             row += 1
         workbook.close()
         
@@ -244,7 +284,8 @@ class PayrollPayment(models.Model):
             'state': 'draft',
             'date': self.date,
             'journal_id': journal_id.id,
-            'name': self.name,
+            'ref': self.name,
+            'name': '/',
         })
         list_line_ids = []
         for line in self.line_ids:

@@ -8,12 +8,13 @@
             <xpath expr="//page[@name='accounting']/group[1]/group[2]" position="after">
                 <group name="payroll" string="Nómina" groups="account.group_account_invoice">
                     <!-- attrs="{'invisible': [('bank_ids', '!=', False)]}" -->
+                    <field name="conciliar_si"/>
                     <field name="is_payroll"/>
                     <field name="blocked_for_payments"/>
                     <field name="blocked_for_purchases"/>
                     <field name="subject_discount"/>
-                    <field name="percentage_discount" attrs="{'invisible': [('subject_discount', '=', False)]}"/>
-                    <field name="retention_account_id" attrs="{'invisible': [('subject_discount', '=', False)]}"/>
+                    <field name="percentage_discount" attrs="{'invisible': [('subject_discount', '=', False)], 'required': [('subject_discount', '!=', False)]}"/>
+                    <field name="retention_account_id" attrs="{'invisible': [('subject_discount', '=', False)], 'required': [('subject_discount', '!=', False)]}"/>
                 </group>
             </xpath>
         </field>
