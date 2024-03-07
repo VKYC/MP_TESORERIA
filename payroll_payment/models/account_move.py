@@ -92,3 +92,10 @@ class AccountMove(models.Model):
         if self.to_check:
             raise ValidationError(_('La factura se encuentra en estado a revisar.'))
         return super(AccountMove, self).action_register_payment()
+
+    @api.depends('l10n_latam_document_type_id')
+    def _compute_name(self):
+        if not self.l10n_latam_document_number:
+            super(AccountMove, self)._compute_name()
+        else:
+            self.name = self.name
