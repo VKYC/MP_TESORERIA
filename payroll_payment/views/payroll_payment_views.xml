@@ -83,6 +83,7 @@
         <field name="arch" type="xml">
             <tree string="Pago de nómina">
                 <field name="name"/>
+                <field name="payroll_name"/>
                 <field name="date"/>
                 <field name="currency_id"/>
                 <field name='number_of_invoices'/>
