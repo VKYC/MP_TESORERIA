@@ -8,11 +8,11 @@
                 <header>
                     <button name="convert_to_send" string="A enviado" class="oe_highlight" type="object" attrs="{'invisible': [('state', '!=', 'draft')]}"/>
                     <button name="convert_approved" string="Aprobar" class="oe_highlight" type="object" groups="base.group_system" attrs="{'invisible': [('state', '!=', 'send')]}"/>
-                    <button name="print_payroll" string="Generar e imprimir nómina" class="oe_highlight" type="object" attrs="{'invisible': ['|', ('state', '!=', 'approved'), ('is_remuneration', '=', False)]}"/>
+                    <button name="print_payroll" string="Generar e imprimir nómina" class="oe_highlight" type="object" attrs="{'invisible': ['|', ('state', '!=', 'approved'), ('is_remuneration', '=', True)]}"/>
                     <button name="convert_to_done" string="Validar" class="oe_highlight" type="object" attrs="{'invisible': [('state', '!=', 'generation_payroll'), '|', ('state', '!=', 'approved'), ('is_remuneration', '=', False)]}"/>
                     <button name="convert_to_draft" string="A borrador" class="oe_highlight" type="object" attrs="{'invisible': [('state', '!=', 'send')]}"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft,send,approved,generation_payroll,done"/>
-                    <field name="is_remuneration" invisible="1"/>
+                    <field name="is_remuneration"/>
                 </header>
                 <sheet>
                     <div class="oe_button_box" name="button_box">
