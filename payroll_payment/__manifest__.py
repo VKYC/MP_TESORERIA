@@ -1,6 +1,6 @@
 {
     'name': 'Payroll Payment',
-    'version': '1.0',
+    'version': '1.2',
     'description': '',
     'summary': '',
     'author': 'Jhon Jairo Rojas Ortiz',

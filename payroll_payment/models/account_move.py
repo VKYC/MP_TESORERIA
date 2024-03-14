@@ -160,7 +160,8 @@ class AccountMove(models.Model):
 
     @api.depends('l10n_latam_document_type_id')
     def _compute_name(self):
-        if not self.l10n_latam_document_number:
-            super(AccountMove, self)._compute_name()
-        else:
-            self.name = self.name
+        for move_id in self:
+            if not move_id.l10n_latam_document_number:
+                super(AccountMove, move_id)._compute_name()
+            else:
+                move_id.name = move_id.name
