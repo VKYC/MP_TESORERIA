@@ -1,5 +1,5 @@
 {
-    'name': 'Payroll Payment',
+    'name': 'Pago de nóminas',
     'version': '1.2',
     'description': '',
     'summary': '',
