@@ -61,7 +61,9 @@ class PayrollPayment(models.Model):
             raise ValidationError(_('Debe seleccionar al menos una factura.'))
         if self.line_ids and not all(self.line_ids.mapped(lambda r: bool(r.mp_flujo_id) and bool(r.mp_grupo_flujo_id))):
             raise ValidationError(_('Debe seleccionar un grupo y flujo para todas las facturas.'))
-        if self.line_ids and all(self.line_ids.mapped(lambda r: bool(r.mp_flujo_id) and bool(r.mp_grupo_flujo_id))) and self.amount_total <= self.budget:
+        if self.line_ids and any(self.line_ids.mapped(lambda r: r.pending_payment_equal_move())):
+            raise ValidationError(_('Al menos una factura tiene débito pendiente.'))
+        if self.line_ids and all(self.line_ids.mapped(lambda r: bool(r.mp_flujo_id) and bool(r.mp_grupo_flujo_id) and not r.pending_payment_equal_move())) and self.amount_total <= self.budget:
             self.state = 'send'
 
     def format_template_xlsx_bci(self, workbook):

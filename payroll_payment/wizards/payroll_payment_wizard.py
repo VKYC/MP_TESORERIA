@@ -6,7 +6,7 @@ class PayrollPaymentWizard(models.TransientModel):
     
     date = fields.Date('Fecha', related='payroll_payment_id.date')
     partner_bank_id = fields.Many2one('res.partner.bank', string='Banco', related='payroll_payment_id.partner_bank_id')
-    payroll_payment_id = fields.Many2one('payroll.payment', string='Nómina')
+    payroll_payment_id = fields.Many2one('payroll.payment', string='Nómina', domain=[('state', '=', 'draft')])
     
     def process_payroll(self):
         move_ids = self.env.context.get('active_ids', [])
@@ -18,6 +18,7 @@ class PayrollPaymentWizard(models.TransientModel):
             and len(move.partner_id.bank_ids) > 0 
             and not move.partner_id.blocked_for_payments 
             and move.partner_id.is_payroll
+            and not move.pending_payment_equal_move()
             )
         # if self.payroll_payment_id.state == 'draft':
         for move in moves_to_process:

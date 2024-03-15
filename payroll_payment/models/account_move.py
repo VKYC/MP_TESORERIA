@@ -1,6 +1,7 @@
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
 from odoo.exceptions import UserError
+import json
 
 class AccountMove(models.Model):
     _inherit = 'account.move'
@@ -30,11 +31,19 @@ class AccountMove(models.Model):
                 record.observation_state = 'observed'
             else:
                 record.observation_state = 'without_observation'
+                
+    def pending_payment_equal_move(self):
+        self._compute_payments_widget_to_reconcile_info()
+        payments_widget_vals = json.loads(self.invoice_outstanding_credits_debits_widget)
+        if payments_widget_vals:
+            payments = payments_widget_vals['content']
+            return any(payments, lambda r: r.amount == self.amount_total)
+        return False
     
     def to_payroll(self):
         move_ids = self.env.context.get('active_ids', [])
         moves = self.env['account.move'].browse(move_ids)
-        moves_to_process = moves.filtered(lambda move: move.payment_state == 'not_paid' and move.partner_bank_id and not move.partner_id.blocked_for_payments and move.partner_id.is_payroll)
+        moves_to_process = moves.filtered(lambda move: move.payment_state == 'not_paid' and move.partner_bank_id and not move.partner_id.blocked_for_payments and move.partner_id.is_payroll and not move.pending_payment_equal_move())
         moves_to_process.write({
             'for_payroll': True
             })
@@ -61,6 +70,8 @@ class AccountMove(models.Model):
                 raise ValidationError(_('La factura no tiene un banco destinatario asociado.'))
             if self.payment_state != 'not_paid':
                 raise ValidationError(_('La factura ya ha sido pagada.'))
+            if self.pending_payment_equal_move():
+                raise ValidationError(_('La factura tiene débito pendiente con un monto similar al de esta factura.'))
 
     @api.onchange("mp_flujo_id")
     def _onchange_mp_flujo_id(self):
