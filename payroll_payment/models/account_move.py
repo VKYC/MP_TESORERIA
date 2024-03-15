@@ -37,7 +37,7 @@ class AccountMove(models.Model):
         payments_widget_vals = json.loads(self.invoice_outstanding_credits_debits_widget)
         if payments_widget_vals:
             payments = payments_widget_vals['content']
-            return any(payments, lambda r: r.amount == self.amount_total)
+            return any(payments, lambda r: r.amount == self.amount_residual)
         return False
     
     def to_payroll(self):
