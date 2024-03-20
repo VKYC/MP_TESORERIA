@@ -332,7 +332,7 @@ class PayrollPayment(models.Model):
             })
         )
         self.move_id.sudo().line_ids = list_line_ids
-        self.move_id.action_post()
+        # self.move_id.action_post() # todo: por confirmar si se debe postear o no el asiento contable
         self.state = 'done'
     
     def convert_to_draft(self):
