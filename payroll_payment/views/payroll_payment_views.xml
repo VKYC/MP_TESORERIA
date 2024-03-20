@@ -10,7 +10,7 @@
                     <button name="convert_approved" string="Aprobar" class="oe_highlight" type="object" groups="base.group_system" attrs="{'invisible': [('state', '!=', 'send')]}"/>
                     <button name="print_payroll" string="Generar e imprimir nómina" class="oe_highlight" type="object" attrs="{'invisible': ['|', ('state', '!=', 'approved'), ('is_remuneration', '=', True)]}"/>
                     <button name="convert_to_done" string="Validar" class="oe_highlight" type="object" attrs="{'invisible': [('state', '!=', 'generation_payroll'), '|', ('state', '!=', 'approved'), ('is_remuneration', '=', False)]}"/>
-                    <button name="convert_to_draft" string="A borrador" class="oe_highlight" type="object" attrs="{'invisible': [('state', '!=', 'send')]}"/>
+                    <button name="convert_to_draft" string="A borrador" groups="payroll_payment.group_payroll_admin" class="oe_highlight" type="object" attrs="{'invisible': [('state', '=', 'draft')]}"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft,send,approved,generation_payroll,done"/>
                     <field name="is_remuneration"/>
                 </header>

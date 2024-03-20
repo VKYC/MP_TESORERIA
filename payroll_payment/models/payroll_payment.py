@@ -312,6 +312,7 @@ class PayrollPayment(models.Model):
                     'product_id': False,
                 })
             )
+            line.move_id.payment_state = 'paid'
         list_line_ids.append(
             (0, 0, {
                 'account_id': account_credit.id,
@@ -331,10 +332,21 @@ class PayrollPayment(models.Model):
             })
         )
         self.move_id.sudo().line_ids = list_line_ids
+        self.move_id.action_post()
         self.state = 'done'
     
     def convert_to_draft(self):
-        self.state = 'draft'
+        try:
+            self = self.sudo()
+            self.move_id.button_draft()
+            self.move_id.unlink()
+            self.line_ids.mapped('move_id').write(
+                {'payment_state': 'not_paid'}
+            )
+        except Exception as e:
+            raise ValidationError(_(e))
+        else:
+            self.state = 'draft'
         
     def action_view_line_ids(self):
         self.ensure_one()
