@@ -8,6 +8,7 @@
             <xpath expr="//field[@name='name']" position="before">
                 <field name="for_payroll" optional="hide" widget="boolean_toggle"/>
                 <field name="payroll_payment_id"/>
+                <field name="category_id" widget="many2manytags"/>
                 <field name="observation_state" widget="badge" decoration-danger="observation_state == 'observed'" decoration-success="observation_state == 'without_observation'"/>
             </xpath>
             <xpath expr="//field[@name='name']" position="after">

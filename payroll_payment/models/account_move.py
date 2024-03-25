@@ -18,6 +18,7 @@ class AccountMove(models.Model):
     end_date_retention = fields.Date(string='Fecha de fin de retención')
     percentage_discount = fields.Float(string='Porcentaje de descuento', default=0.0, related='partner_id.percentage_discount')
     retention_amount = fields.Monetary(string='Monto de retención', compute='_compute_retention_amount', store=True, currency='currency_id')
+    category_id = fields.Many2many('res.partner.category', string='Categoría', related='partner_id.category_id')
     
     @api.depends('amount_total', 'percentage_discount')
     def _compute_retention_amount(self):
