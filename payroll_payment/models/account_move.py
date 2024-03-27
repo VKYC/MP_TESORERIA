@@ -7,6 +7,14 @@ class AccountMove(models.Model):
     _inherit = 'account.move'
     _description = 'Account Move'
     
+    @api.depends('partner_id.category_id')
+    def _compute_category_id(self):
+        for rec in self:
+            if rec.partner_id.category_id:
+                rec.category_id = rec.partner_id.category_id
+            else:
+                rec.category_id = False
+    
     for_payroll = fields.Boolean(string='Para nómina', default=False)
     payroll_payment_id = fields.Many2one('payroll.payment', string='Nómina', copy=False)
     mp_flujo_id = fields.Many2one(comodel_name="mp.flujo")
@@ -18,7 +26,7 @@ class AccountMove(models.Model):
     end_date_retention = fields.Date(string='Fecha de fin de retención')
     percentage_discount = fields.Float(string='Porcentaje de descuento', default=0.0, related='partner_id.percentage_discount')
     retention_amount = fields.Monetary(string='Monto de retención', compute='_compute_retention_amount', store=True, currency='currency_id')
-    category_id = fields.Many2many('res.partner.category', string='Categoría', related='partner_id.category_id', store=True, readonly=True)
+    category_id = fields.Many2many('res.partner.category', string='Categoría', compute='_compute_category_id', store=True, readonly=True)
     
     @api.depends('amount_total', 'percentage_discount')
     def _compute_retention_amount(self):
