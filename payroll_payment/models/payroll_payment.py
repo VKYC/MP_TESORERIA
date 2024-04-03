@@ -122,7 +122,7 @@ class PayrollPayment(models.Model):
             # worksheet.write(row, col + 11, line.move_id.partner_id.email or '')
             # worksheet.write(row, col + 12, line.move_id.partner_id.name or '')
             worksheet.write(row, col, '')
-            worksheet.write(row, col + 1, line.move_id.partner_id.vat or '')
+            worksheet.write(row, col + 1, line.move_id.partner_id.vat.split('-')[0] if line.move_id.partner_id.vat and '-' in line.move_id.partner_id.vat else '')
             worksheet.write(row, col + 2, line.move_id.partner_id.name or '')
             worksheet.write(row, col + 3, 'OTC')
             worksheet.write(row, col + 4, '012')
