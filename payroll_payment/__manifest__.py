@@ -21,6 +21,7 @@
         'wizards/assign_flow_group_views.xml',
         'views/res_partner_views.xml',
         'views/account_move_views.xml',
+        'views/account_payment_views.xml',
         'views/res_bank_views.xml',
         'views/payroll_payment_views.xml',
         'views/hr_expense_views.xml',
