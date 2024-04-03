@@ -205,7 +205,7 @@ class PayrollPayment(models.Model):
         worksheet.write('B1', 'Nombre/Razón Social Beneficiario', bold)
         worksheet.write('C1', 'Tipo Documento', bold)
         worksheet.write('D1', 'Nº Referencia/Documento', bold)
-        worksheet.write('E1', 'Monto Descuento', bold)
+        worksheet.write('E1', 'Monto Documento', bold)
         worksheet.write('F1', 'Subtotal', bold)
         worksheet.write('G1', 'Forma Pago', bold)
         worksheet.write('H1', 'Nº Cuenta de Abono', bold)
