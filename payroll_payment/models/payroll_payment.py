@@ -31,6 +31,20 @@ class PayrollPayment(models.Model):
     observations = fields.Text('Observaciones')
     payroll_name = fields.Char('Nombre de la nómina')
     is_remuneration = fields.Boolean(string='Es Remuneración', related='payroll_payment_type_id.is_remuneration')
+    mp_flujo_id = fields.Many2one(comodel_name="mp.flujo", domain="[('grupo_flujo_ids', 'in', mp_grupo_flujo_id)]")
+    mp_grupo_flujo_ids = fields.Many2many(related="mp_flujo_id.grupo_flujo_ids")
+    mp_grupo_flujo_id = fields.Many2one(comodel_name="mp.grupo.flujo", domain="[]")
+    
+    def assign_grupo_flujo_and_flujo(self):
+        for line in self.line_ids:
+            if not line.mp_flujo_id or not line.mp_grupo_flujo_id:
+                line.mp_grupo_flujo_id = self.mp_grupo_flujo_id
+                line.mp_flujo_id = self.mp_flujo_id
+    
+    @api.onchange("mp_grupo_flujo_id")
+    def _onchange_mp_flujo_id(self):
+        for register_id in self:
+            register_id.mp_flujo_id = self.env['mp.flujo']
     
     @api.depends('line_ids')
     def _compute_lines_count(self):

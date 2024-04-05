@@ -39,17 +39,7 @@ class PayrollPaymentLine(models.Model):
             raise ValidationError(_('El proveedor se encuentra bloqueado para pagos.'))
         if self.move_id and len(self.move_id.partner_id.bank_ids) == 0:
             raise ValidationError(_('El proveedor no tiene bancos asociados.'))
-    
-    # @api.onchange("mp_flujo_id")
-    # def _onchange_mp_flujo_id(self):
-    #     for register_id in self:
-    #         register_id.mp_grupo_flujo_id = self.env['mp.grupo.flujo']
-            
-    @api.onchange("mp_grupo_flujo_id")
-    def _onchange_mp_flujo_id(self):
-        for register_id in self:
-            register_id.mp_flujo_id = self.env['mp.flujo']
-    
+
     def unlink(self):
         for record in self:
             if not self.user_has_groups('base.group_system') and record.payroll_payment_id and record.payroll_payment_id.state != 'draft':
