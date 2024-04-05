@@ -272,16 +272,12 @@ class PayrollPayment(models.Model):
     
     def convert_to_done(self):
         journal_id = self.env['account.journal'].search([('bank_account_id', '=', self.partner_bank_id.id)], limit=1)
-        # account_debit = self.env.company.account_debit_id
-        # account_credit = self.env.company.account_credit_id
-        account_credit = journal_id.default_account_id
+        outbound_payment_method_lines = journal_id.outbound_payment_method_line_ids.filtered(lambda r: r.payment_method_id.name == 'Manual')
+        account_credit = outbound_payment_method_lines and outbound_payment_method_lines[0].payment_account_id or False
         if not journal_id:
             raise ValidationError(_('No existe un diario de tipo banco.'))
         if not account_credit:
             raise ValidationError(_('No existe una cuenta de débito.'))
-        # if not account_credit:
-        #     raise ValidationError(_('No existe una cuenta de crédito.'))
-        # crear asientos contables y apuntes contables
         self.move_id = self.env['account.move'].sudo().create({
             'state': 'draft',
             'date': self.date,
