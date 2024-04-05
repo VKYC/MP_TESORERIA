@@ -14,6 +14,7 @@
         'data/ir_sequence.xml',
         'data/payroll_payment_type.xml',
         'data/res_groups.xml',
+        'data/ir_ui_menu.xml',
         'security/ir.model.access.csv',
         'wizards/payroll_payment_wizard_views.xml',
         'wizards/warning_views.xml',
