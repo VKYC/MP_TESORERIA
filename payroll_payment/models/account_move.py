@@ -44,9 +44,9 @@ class AccountMove(models.Model):
     def pending_payment_equal_move(self):
         self._compute_payments_widget_to_reconcile_info()
         payments_widget_vals = json.loads(self.invoice_outstanding_credits_debits_widget)
-        if payments_widget_vals:
-            payments = payments_widget_vals['content']
-            return any(payments, lambda r: r.amount == self.amount_residual)
+        payments = payments_widget_vals and payments_widget_vals['content'] or False
+        if payments_widget_vals and payments:
+            return any(lambda r: r.amount == self.amount_residual for r in payments)
         return False
 
     def _compute_payments_widget_to_reconcile_info(self):
