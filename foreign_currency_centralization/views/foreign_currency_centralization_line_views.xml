@@ -9,11 +9,13 @@
                     <group>
                         <group>
                             <field name="account_account_id"/>
-                            <field name="currency_id"/>
+                            <field name="from_currency_id"/>
+                            <field name="to_currency_id"/>
                         </group>
                         <group>
                             <field name="rate"/>
                             <field name="date"/>
+                            <field name="amount_total"/>
                         </group>
                     </group>
                 </sheet>
@@ -26,9 +28,11 @@
         <field name="arch" type="xml">
             <tree string="Centralización de moneda extranjera">
                 <field name="account_account_id"/>
-                <field name="currency_id"/>
+                <field name="from_currency_id"/>
+                <field name="to_currency_id"/>
                 <field name="rate"/>
                 <field name="date"/>
+                <field name="amount_total"/>
             </tree>
         </field>
     </record>
