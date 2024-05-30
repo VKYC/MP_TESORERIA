@@ -1,6 +1,6 @@
 {
     'name': 'Pago de nóminas',
-    'version': '15.0.0.3.5',
+    'version': '1.3',
     'description': '',
     'summary': '',
     'author': 'Jhon Jairo Rojas Ortiz',
