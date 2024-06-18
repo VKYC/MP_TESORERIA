@@ -1,4 +1,4 @@
-from . import res_company
+# from . import res_company
 from . import res_partner
 from . import payroll_payment_line
 from . import payroll_payment_type
